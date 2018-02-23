@@ -1,0 +1,24 @@
+GIMP Palette
+Name: Color palette by Paletton.com #7000W0krosLcNOgkwxUuik4II8jColumns: 4
+
+#
+229 33 33 primary 0
+255 153 153 primary 1
+255 92 92 primary 2
+160 9 9 primary 3
+66 0 0 primary 4
+229 164 33 secondary-1 0
+255 221 153 secondary-1 1
+255 201 92 secondary-1 2
+160 109 9 secondary-1 3
+66 44 0 secondary-1 4
+36 71 154 secondary-2 0
+142 166 221 secondary-2 1
+ 75 105 176 secondary-2 2
+ 16 44 107 secondary-2 3
+ 3 15 44 secondary-2 4
+ 26 183 26 complement 0
+141 235 141 complement 1
+ 74 207 74 complement 2
+ 7 128 7 complement 3
+ 0 53 0 complement 4
