@@ -1,5 +1,6 @@
 package;
 
+import flixel.FlxG;
 import flixel.FlxState;
 import flixel.text.FlxText;
 
@@ -12,7 +13,7 @@ class JoinState extends FlxState
 	
 	private var _all : Array<JoinEntity> = [];
 	private var _numberOfPlayersJoined = 0;
-	
+	private var _age : Float = 0;
 	
 	public function new() 
 	{
@@ -33,6 +34,7 @@ class JoinState extends FlxState
 	override public function update(elapsed:Float):Void 
 	{
 		super.update(elapsed);
+		_age += elapsed;
 		
 		var resort : Bool = false;
 		
@@ -77,6 +79,26 @@ class JoinState extends FlxState
 				_all[i].text.x = 30 + i * 206;
 			}
 		}
+	
+		if (FlxG.keys.justPressed.SPACE && _numberOfPlayersJoined >= 2)
+		{
+			StartGame();
+		}
+	}
+	
+	function StartGame() 
+	{
+		var ps : PlayState = new PlayState();
+		for (i in 0 ... 4 )
+		{
+			if (_all[i].alreadyJoined)
+			{
+				ps.AddPlayer(_all[i].Input);
+			}
+		}
+		
+		FlxG.switchState(ps);
+		
 		
 	}
 	
@@ -88,4 +110,6 @@ class JoinState extends FlxState
 			_all[i].text.draw();
 		}
 	}
+	
+	
 }

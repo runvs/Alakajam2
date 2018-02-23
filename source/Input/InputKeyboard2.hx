@@ -16,28 +16,29 @@ class InputKeyboard2 extends BasicInput
 		public override function update(elapsed : Float ) : Void
 	{
 		super.update(elapsed);
-		if (FlxG.keys.pressed.LEFT)
+		if (FlxG.keys.justPressed.LEFT)
 		{
 			xVal = -1;
 			LeftJustPressed = true;
 			anyPressed = true;
 		}
-		if (FlxG.keys.pressed.RIGHT)
+		if (FlxG.keys.justPressed.RIGHT)
 		{
 			xVal = 1;
 			RightJustPressed = true;
 			anyPressed = true;
 		}
 		
-		if (FlxG.keys.pressed.UP)
+		if (FlxG.keys.justPressed.UP)
 		{
 			yVal = -1;
 			UpJustPressed = true;
 			anyPressed = true;
 		}
-		if (FlxG.keys.pressed.DOWN)
+		if (FlxG.keys.justPressed.DOWN)
 		{
 			yVal = 1;
+			trace("down");
 			DownJustPressed = true;
 			anyPressed = true;
 		}
@@ -45,7 +46,6 @@ class InputKeyboard2 extends BasicInput
 	
 		if (FlxG.keys.justPressed.K)
 		{
-			trace("K");
 			ShootJustPressed  = true;
 			anyPressed = true;
 		}

@@ -3,6 +3,7 @@ package;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
+import flixel.group.FlxSpriteGroup;
 import flixel.text.FlxText;
 import flixel.tweens.FlxTween;
 import flixel.ui.FlxButton;
@@ -25,7 +26,7 @@ class PlayState extends FlxState
 	private var timer : Float;
 	private var timerText : FlxText;
 	
-	
+	private var players : FlxTypedSpriteGroup<Player> = null;
 	
 	
 	/**
@@ -47,6 +48,8 @@ class PlayState extends FlxState
 		////SpriteFunctions.shadeSpriteWithBorder(spr, Palette.color3, Palette.color5);
 		//add(spr);
 		
+		//players = new FlxTypedSpriteGroup<Player>();
+		add(players);
 		
 		ending = false;
 		overlay = new FlxSprite();
@@ -99,7 +102,7 @@ class PlayState extends FlxState
 		
 		if (!ending)
 		{
-			
+			players.update(elapsed);
 			if (timer <= 0)
 			{
 				EndGame();
@@ -108,6 +111,23 @@ class PlayState extends FlxState
 		}
 	}	
 	
+	
+	public function AddPlayer ( bi : BasicInput)
+	{
+		if (players == null)
+			players = new FlxTypedSpriteGroup < Player>();
+		
+		var p : Player  = new Player(players.length, bi);
+		if (p.id == 0)
+			p.setPosition( 3 * GP.WorldTileSizeInPixel, 3 * GP.WorldTileSizeInPixel);
+		else if (p.id == 1)
+			p.setPosition( 25 * GP.WorldTileSizeInPixel, 20 * GP.WorldTileSizeInPixel);
+		else if (p.id == 2)
+			p.setPosition( 3 * GP.WorldTileSizeInPixel, 20 * GP.WorldTileSizeInPixel);
+		else if (p.id == 3)
+			p.setPosition( 25 * GP.WorldTileSizeInPixel, 3 * GP.WorldTileSizeInPixel);
+		players.add(p);
+	}
 
 	
 	function EndGame() 
