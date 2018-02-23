@@ -136,7 +136,7 @@ class MenuState extends FlxState
 		{
 			started = true;
 			overlayTween.cancel();
-			overlayTween = FlxTween.tween(overlay, { alpha : 1 }, 0.5, { onComplete: function (t) {FlxG.switchState(new PlayState());} } );
+			overlayTween = FlxTween.tween(overlay, { alpha : 1 }, 0.5, { onComplete: function (t) {FlxG.switchState(new JoinState());} } );
 		}
 	}
 }

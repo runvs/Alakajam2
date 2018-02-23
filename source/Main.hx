@@ -12,6 +12,6 @@ class Main extends Sprite
 		
 		super();
 		//GAnalytics.startSession( "YOUR-UA-CODE" );
-		addChild(new FlxGame(800, 600, IntroState, 1, 60, 60, true));
+		addChild(new FlxGame(1024, 768, IntroState, 1, 60, 60, true));
 	}
 }
