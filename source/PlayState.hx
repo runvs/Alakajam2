@@ -26,6 +26,8 @@ class PlayState extends FlxState
 	private var timer : Float;
 	private var timerText : FlxText;
 	
+	private var playersToJoinInput : Array<BasicInput> = [];
+	
 	private var players : FlxTypedSpriteGroup<Player> = null;
 	
 	public var allMines : AdministratedList<Mine>;
@@ -38,7 +40,7 @@ class PlayState extends FlxState
 		super.create();
 		backgroundSprite = new FlxSprite();
 		backgroundSprite.makeGraphic(FlxG.width, FlxG.height);
-		backgroundSprite.color = Palette.color1;
+		backgroundSprite.color = FlxColor.BLACK;
 		add(backgroundSprite);
 		
 		
@@ -52,12 +54,10 @@ class PlayState extends FlxState
 		allMines = new AdministratedList<Mine>();
 		add(allMines);
 		
-		
+		players = new FlxTypedSpriteGroup<Player>();
+		SpawnPlayers();
 		add(players);
-		for (p in players)
-		{
-			p.setState(this);
-		}
+	
 		
 		ending = false;
 		overlay = new FlxSprite();
@@ -121,19 +121,26 @@ class PlayState extends FlxState
 	
 	public function AddPlayer ( bi : BasicInput)
 	{
-		if (players == null)
-			players = new FlxTypedSpriteGroup < Player>();
-		
-		var p : Player  = new Player(players.length, bi);
-		if (p.id == 0)
-			p.setPosition( 3 * GP.WorldTileSizeInPixel, 3 * GP.WorldTileSizeInPixel);
-		else if (p.id == 1)
-			p.setPosition( 25 * GP.WorldTileSizeInPixel, 20 * GP.WorldTileSizeInPixel);
-		else if (p.id == 2)
-			p.setPosition( 3 * GP.WorldTileSizeInPixel, 20 * GP.WorldTileSizeInPixel);
-		else if (p.id == 3)
-			p.setPosition( 25 * GP.WorldTileSizeInPixel, 3 * GP.WorldTileSizeInPixel);
-		players.add(p);
+		playersToJoinInput.push(bi);
+	}
+	
+	public function SpawnPlayers()
+	{
+		for (i in 0 ... playersToJoinInput.length)
+		{
+			var p : Player = new Player(i, playersToJoinInput[i], this);
+			
+			if (p.id == 0)
+				p.setPosition( 3 * GP.WorldTileSizeInPixel, 3 * GP.WorldTileSizeInPixel);
+			else if (p.id == 1)
+				p.setPosition( 25 * GP.WorldTileSizeInPixel, 20 * GP.WorldTileSizeInPixel);
+			else if (p.id == 2)
+				p.setPosition( 3 * GP.WorldTileSizeInPixel, 20 * GP.WorldTileSizeInPixel);
+			else if (p.id == 3)
+				p.setPosition( 25 * GP.WorldTileSizeInPixel, 3 * GP.WorldTileSizeInPixel);
+			
+			players.add(p);
+		}
 	}
 
 	

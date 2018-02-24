@@ -31,19 +31,19 @@ class Player extends FlxSprite
 	public var attackHoldTimer  : Float = 0;
 	public var throwDist : Int = 0;
 	
+	private var targetTile : FlxSprite;
 	
-	public function new(i : Int, bi: BasicInput) 
+	public function new(i : Int, bi: BasicInput, s: PlayState) 
 	{
 		super();
+		_state = s;
 		id = i;
 		input = bi;
 		
 		this.makeGraphic(Std.int(GP.WorldTileSizeInPixel), Std.int(GP.WorldTileSizeInPixel), FlxColor.WHITE, true);
-	}
-	
-	public function setState (s : PlayState)
-	{
-		_state = s;
+		
+		targetTile = new FlxSprite();
+		
 	}
 	
 	
@@ -175,6 +175,9 @@ class Player extends FlxSprite
 	override public function draw():Void 
 	{
 		super.draw();
+		
+		if (throwDist != 0)
+			targetTile.draw();
 	}
 	
 }
