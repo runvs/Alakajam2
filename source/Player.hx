@@ -38,6 +38,8 @@ class Player extends FlxSprite
 	private var invisTimer : Float = GP.PlayerInvisStartTimer;
 	private var invisTween : FlxTween = null;
 	
+	private var playerColor : FlxColor;
+	
 	public function new(i : Int, bi: BasicInput, s: PlayState) 
 	{
 		super();
@@ -54,7 +56,18 @@ class Player extends FlxSprite
 		targetTile.animation.play("idle");
 		targetTile.scale.set(2, 2);
 		targetTile.alpha = 0.8;
-		//targetTile.color = FlxColor.CYAN;
+		
+		calcPlayerColor();
+	}
+	
+	function calcPlayerColor() 
+	{
+		if (id == 0) playerColor = Palette.colp1;
+		if (id == 1) playerColor = Palette.colp2;
+		if (id == 2) playerColor = Palette.colp3;
+		if (id == 3) playerColor = Palette.colp4;
+		
+		playerColor.alpha = 20;
 	}
 	
 	
@@ -182,35 +195,63 @@ class Player extends FlxSprite
 		if (moveList.length == 0)
 			return;		// nothing to do here
 		
-		if (moveList[0] == FlxObject.LEFT && _state.isTileWalkable(posX-1,posY))
+		if (moveList[0] == FlxObject.LEFT )
 		{
-			//trace("left--");
-			posX--;
-			FlxTween.tween(this, { x : x - GP.WorldTileSizeInPixel }, GP.PlayerMoveTimer, { ease : FlxEase.circInOut } );
-			moveTimer = GP.PlayerMoveTimer;
 			playerFacing = FlxObject.LEFT;
+			if (_state.isTileWalkable(posX-1,posY))
+			{
+				posX--;
+				FlxTween.tween(this, { x : x - GP.WorldTileSizeInPixel }, GP.PlayerMoveTimer, { ease : FlxEase.circInOut } );
+				moveTimer = GP.PlayerMoveTimer;
+			}
+			else
+			{
+				UnHide(0.4);
+			}
+			
 		}
-		else if (moveList[0] == FlxObject.RIGHT && _state.isTileWalkable(posX+1,posY))
+		else if (moveList[0] == FlxObject.RIGHT )
 		{
-			posX++;
-			FlxTween.tween(this, { x : x + GP.WorldTileSizeInPixel }, GP.PlayerMoveTimer, { ease : FlxEase.circInOut } );
-			moveTimer = GP.PlayerMoveTimer;
 			playerFacing = FlxObject.RIGHT;
+			if (_state.isTileWalkable(posX + 1, posY))
+			{
+				posX++;
+				FlxTween.tween(this, { x : x + GP.WorldTileSizeInPixel }, GP.PlayerMoveTimer, { ease : FlxEase.circInOut } );
+				moveTimer = GP.PlayerMoveTimer;
+			}
+			else
+			{
+				UnHide(0.4);
+			}
 		}
 		
-		if (moveList[0] == FlxObject.UP && _state.isTileWalkable(posX,posY-1))
+		if (moveList[0] == FlxObject.UP )
 		{
-			posY--;
-			FlxTween.tween(this, { y : y - GP.WorldTileSizeInPixel }, GP.PlayerMoveTimer, { ease : FlxEase.circInOut } );
-			moveTimer = GP.PlayerMoveTimer;
 			playerFacing = FlxObject.UP;
+			if (_state.isTileWalkable(posX, posY - 1))
+			{
+				posY--;
+				FlxTween.tween(this, { y : y - GP.WorldTileSizeInPixel }, GP.PlayerMoveTimer, { ease : FlxEase.circInOut } );
+				moveTimer = GP.PlayerMoveTimer;
+			}
+			else
+			{
+				UnHide(0.4);
+			}
 		}
-		else if (moveList[0] == FlxObject.DOWN && _state.isTileWalkable(posX,posY+1))
+		else if (moveList[0] == FlxObject.DOWN )
 		{
-			posY++;
-			FlxTween.tween(this, { y : y + GP.WorldTileSizeInPixel }, GP.PlayerMoveTimer, { ease : FlxEase.circInOut } );
-			moveTimer = GP.PlayerMoveTimer;
 			playerFacing = FlxObject.DOWN;
+			if (_state.isTileWalkable(posX, posY + 1))
+			{
+				posY++;
+				FlxTween.tween(this, { y : y + GP.WorldTileSizeInPixel }, GP.PlayerMoveTimer, { ease : FlxEase.circInOut } );
+				moveTimer = GP.PlayerMoveTimer;
+			}
+			else
+			{
+				UnHide(0.4);
+			}
 		}
 		if (_state.level.isTileDetection(posX, posY))
 		{
@@ -262,10 +303,10 @@ class Player extends FlxSprite
 		{
 			invisTween.cancel();
 		}
-		invisTween = FlxTween.tween(this, { alpha : 1 }, 0.25);
+		invisTween = FlxTween.tween(this, { alpha : ((t < 0)?  t: 1 ) }, 0.25);
 		invisTimer = t;
 		
-		LocalScreenFlash.addFlash(x, y, 0.35, FlxColor.fromRGB(255,255,255,20));
+		LocalScreenFlash.addFlash(x + GP.WorldTileSizeInPixel/2, y+ GP.WorldTileSizeInPixel/2, 0.35, playerColor);
 	}
 	
 	
