@@ -13,12 +13,13 @@ import flixel.util.FlxColor;
 class Mine extends FlxSprite
 {
 	private var _state : PlayState = null;
+	var shouldExplode:Bool = false;
 
 	public var id : Int = -1;
 	public var mode : Int = 0;	// 0 flying, 1 laying and waiting for explosion
 
-	private var tx : Int;
-	private var ty : Int;
+	public var tx : Int;
+	public var ty : Int;
 	
 	public function new(px : Int, py: Int, _tx: Int, _ty: Int, pID:  Int, s : PlayState) 
 	{
@@ -54,12 +55,18 @@ class Mine extends FlxSprite
 	{
 		super.update(elapsed);
 		//trace(x, y);
-		
+		if (mode == 1 && shouldExplode)
+		ExplodeMe(true);
 		
 	}
 	
 	public function ExplodeMe(small:Bool = false)
 	{
+		if (mode == 0)
+		{
+			shouldExplode = true;
+			return;
+		}
 		_state.ExplodeTile(tx, ty);
 		if (!small)
 		{

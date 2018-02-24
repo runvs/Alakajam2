@@ -119,7 +119,7 @@ class Player extends FlxSprite
 			
 			if (input.ShootJustReleased)
 			{
-				if (_state.getMineCountForPlayerX(id) >= MaxMineCount)
+				if (_state.getMineCountForPlayerX(id) >= MaxMineCount )
 				{	
 					// todo dead man's click
 					
@@ -147,10 +147,14 @@ class Player extends FlxSprite
 		var ox : Int = Std.int(MathExtender.objectDir2Point(playerFacing).x) + Std.int(MathExtender.objectDir2Point(playerFacing).x) * throwDist;
 		var oy : Int = Std.int(MathExtender.objectDir2Point(playerFacing).y) + Std.int(MathExtender.objectDir2Point(playerFacing).y) * throwDist;
 
-		var m : Mine = new Mine(posX, posY, posX + ox, posY + oy, this.id, _state );
+		var tx : Int = posX + ox;
+		var ty : Int = posY + oy;
 		
-		
-		_state.SpawnMine(m);
+		if (_state.level.isTileFree(tx,ty))
+		{	
+			var m : Mine = new Mine(posX, posY, tx, ty, this.id, _state );
+			_state.SpawnMine(m);
+		}
 	}
 	
 	

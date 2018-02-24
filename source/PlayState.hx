@@ -73,7 +73,7 @@ class PlayState extends FlxState
 	
 		FlxTween.tween (overlay, { alpha : 0 }, 0.25);
 		
-		timer = 25;
+		timer = 250;
 		timerText = new FlxText(10, 10, 0, "0", 16);
 		timerText.color = Palette.color5;
 		//add(timerText);
@@ -114,7 +114,9 @@ class PlayState extends FlxState
 		
 		if (!ending)
 		{
-			//players.update(elapsed);
+			
+			
+			
 			if (timer <= 0)
 			{
 				EndGame();
@@ -161,6 +163,14 @@ class PlayState extends FlxState
 	
 	public function SpawnMine ( m : Mine)
 	{
+		for (m2 in allMines)
+		{
+			if (m2.tx == m.tx && m2.ty == m.ty)
+			{
+				m.ExplodeMe(true);
+				break;
+			}
+		}
 		allMines.add(m);
 	}
 	
@@ -170,6 +180,14 @@ class PlayState extends FlxState
 		{
 			if (p.posX == tx && p.posY == ty)
 				p.KillMe();
+		}
+		for (m in allMines)
+		{
+			if (m.tx == tx && m.ty == ty)
+			{
+				var ti: FlxTimer = new FlxTimer();
+				ti.start(FlxG.random.float(1.0,1.1) * GP.MineStaggeredExplosionDelay, function(t) { m.ExplodeMe(); } );
+			}
 		}
 		
 		for (i in 0 ... GP.WorldExplosionsPerTile)

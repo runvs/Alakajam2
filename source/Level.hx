@@ -68,7 +68,7 @@ class Level extends FlxSpriteGroup
 		if (X < 0 || Y < 0 || X >= GP.WorldSizeX || Y >= GP.WorldSizeY) return false;
 		
 		var idx : Int = X + Y * GP.WorldSizeX;
-		trace("isTileFree ", X, Y, idx);
+		//trace("isTileFree ", X, Y, idx);
 		if (idx <0 || idx >= GP.WorldSizeX*GP.WorldSizeY)
 			return false;
 		
