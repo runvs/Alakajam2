@@ -67,11 +67,11 @@ class Level extends FlxTypedSpriteGroup<Tile>
 			}
 			else if (c.red == 0 && c.green == 255 && c.blue == 0)
 			{
-				trace("water");
+				//trace("water");
 				var w : Tile= new Tile(i,j,3);
 				add(w);
 				spawned = true;
-				collisionArray[i + i * GP.WorldSizeX] = 3;
+				collisionArray[i + j * GP.WorldSizeX] = 3;
 			}
 			
 			if (!spawned)
@@ -94,6 +94,7 @@ class Level extends FlxTypedSpriteGroup<Tile>
 		if (idx <0 || idx >= GP.WorldSizeX*GP.WorldSizeY)
 			return false;
 		
+		trace(X, Y, idx, collisionArray[idx]);
 		return ( collisionArray[idx] == 3);
 	}
 

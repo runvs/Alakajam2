@@ -253,9 +253,10 @@ class Player extends FlxSprite
 				UnHide(0.4);
 			}
 		}
+		
 		if (_state.level.isTileDetection(posX, posY))
 		{
-			
+			SmallUnhide();
 		}
 		
 		moveList.remove(moveList[0]);
@@ -303,10 +304,22 @@ class Player extends FlxSprite
 		{
 			invisTween.cancel();
 		}
-		invisTween = FlxTween.tween(this, { alpha : ((t < 0)?  t: 1 ) }, 0.25);
+		invisTween = FlxTween.tween(this, { alpha : ((t < 0)?  t: 1 ) }, 0.25 * t);
 		invisTimer = t;
 		
-		LocalScreenFlash.addFlash(x + GP.WorldTileSizeInPixel/2, y+ GP.WorldTileSizeInPixel/2, 0.35, playerColor);
+		LocalScreenFlash.addFlash(x + GP.WorldTileSizeInPixel/2, y+ GP.WorldTileSizeInPixel/2, 0.5*t, playerColor);
+	}
+	
+	public function SmallUnhide() : Void 
+	{
+		if (invisTween != null)
+			invisTween.cancel();
+		invisTween = FlxTween.tween(this, { alpha :  0.2 }, 0.2);
+		invisTimer = 0.3;
+		
+		//var c : FlxColor = playerColor;
+		//c.alpha = 5;
+		//LocalScreenFlash.addFlash(x + GP.WorldTileSizeInPixel/2, y+ GP.WorldTileSizeInPixel/2, 0.35, c);
 	}
 	
 	
