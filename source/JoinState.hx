@@ -14,6 +14,8 @@ class JoinState extends FlxState
 	private var _numberOfPlayersJoined = 0;
 	private var _age : Float = 0;
 	
+	private var _text : FlxText;
+	
 	public function new() 
 	{
 		super();
@@ -27,7 +29,14 @@ class JoinState extends FlxState
 		for (i in 0...4)
 		{
 			_all.push(new JoinEntity(new GPInput(i)));
+		
+			
 		}
+		
+		_text = new FlxText(0, 50, 1024, "Press [THROW] to join!\nPress[SPACE] to start!", 16);
+		_text.alignment = FlxTextAlign.CENTER;
+		add(_text);
+		
 	}
 	
 	override public function update(elapsed:Float):Void 
@@ -42,7 +51,9 @@ class JoinState extends FlxState
 		
 		for (i in 0 ... _all.length)
 		{
+			
 			_all[i].Input.update(elapsed);
+			_all[i].image.update(elapsed);
 			
 			if (_numberOfPlayersJoined >= 4)
 				break;
@@ -78,7 +89,18 @@ class JoinState extends FlxState
 			
 			for (i in 0 ... _all.length)
 			{
-				_all[i].text.x = 30 + i * 206;
+				_all[i].text.x = 200 + (i % 2) * 300;
+				_all[i].text.y = 150 + Std.int(i / 2)  * 150;
+				
+				_all[i].image.setPosition(_all[i].text.x + 100 - 16, _all[i].text.y + 50);
+				
+				if (!StringTools.startsWith(_all[i].text.text, "Free"))
+				{
+					if (i == 0)	_all[i].text.color = Palette.colp1;
+					else if (i == 1)	_all[i].text.color = Palette.colp2;
+					else if (i == 2)	_all[i].text.color = Palette.colp3;
+					else if (i == 3)	_all[i].text.color = Palette.colp4;
+				}
 			}
 		}
 	
@@ -118,6 +140,10 @@ class JoinState extends FlxState
 		for (i in 0 ... _all.length)
 		{
 			_all[i].text.draw();
+			if (_all[i].alreadyJoined)
+			{
+				_all[i].image.draw();
+			}
 		}
 	}
 }
