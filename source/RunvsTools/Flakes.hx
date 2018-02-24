@@ -16,8 +16,8 @@ class Flakes extends ScreenWrappingSpriteGroup
 	// encoded as frequency and phase
 	var _individualVelocity:Array <FlxPoint>;
 	
-	public var _globalVelocityX : Float= 0;
-	public var _globalVelocityY : Float = 0;
+	public var _globalVelocityX : Float= 8;
+	public var _globalVelocityY : Float = 3;
 	
 	var _timer : Float = 0;
 	

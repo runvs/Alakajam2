@@ -37,6 +37,9 @@ class PlayState extends FlxState
 	public var levelString : String = "";
 	public var level : Level;
 	
+	public var vignette : Vignette;
+	public var flakes : Flakes;
+	
 	/**
 	 * Function that is called up when to state is created to set it up. 
 	 */
@@ -65,6 +68,13 @@ class PlayState extends FlxState
 		
 		allExplosions = new AdministratedList<Explosion>();
 		add(allExplosions);
+		
+		flakes = new Flakes(FlxG.camera, 10, 80, 6, FlxColor.fromRGB(186, 174, 160));
+		add(flakes);
+		
+		
+		vignette = new Vignette(FlxG.camera);
+		add(vignette);
 		
 		ending = false;
 		overlay = new FlxSprite();
