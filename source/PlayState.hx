@@ -207,10 +207,10 @@ class PlayState extends FlxState
 		for (i in 0 ... GP.WorldExplosionsPerTile)
 		{
 			var t : FlxTimer = new FlxTimer();
-			t.start(FlxG.random.float(0, 0.25), function (t)
+			t.start(FlxG.random.float(0, 0.2), function (t)
 			{
-				var px : Float = (tx - 1 + FlxG.random.float(0, 1) ) * GP.WorldTileSizeInPixel ;
-				var py : Float = (ty - 1 + FlxG.random.float(0,1) ) * GP.WorldTileSizeInPixel ;
+				var px : Float = (tx - 1 + FlxG.random.float(0.2, 0.8) ) * GP.WorldTileSizeInPixel ;
+				var py : Float = (ty - 1 + FlxG.random.float(0.2, 0.8) ) * GP.WorldTileSizeInPixel ;
 				var e : Explosion = new Explosion(px, py, Std.int(1.5 * GP.WorldTileSizeInPixel));
 				SpawnExplosion(e);
 			});
