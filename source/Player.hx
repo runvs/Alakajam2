@@ -13,7 +13,8 @@ import flixel.util.FlxColor;
  */
 class Player extends FlxSprite
 {
-
+	private var _state : PlayState;
+	
 	private var input : BasicInput;
 	public var id : Int = 0;
 	
@@ -25,6 +26,11 @@ class Player extends FlxSprite
 	public var moveList : Array<Int> = [];
 	public var playerFacing : Int = FlxObject.LEFT;
 	
+	public var remainingMines : Int = 3;
+	public var attackTimer : Float = 0;
+	public var attackHoldTimer  : Float = 0;
+	public var throwDist : Int = 0;
+	
 	
 	public function new(i : Int, bi: BasicInput) 
 	{
@@ -35,6 +41,12 @@ class Player extends FlxSprite
 		this.makeGraphic(Std.int(GP.WorldTileSizeInPixel), Std.int(GP.WorldTileSizeInPixel), FlxColor.WHITE, true);
 	}
 	
+	public function setState (s : PlayState)
+	{
+		_state = s;
+	}
+	
+	
 	override public function update(elapsed:Float):Void 
 	{
 		super.update(elapsed);
@@ -43,26 +55,61 @@ class Player extends FlxSprite
 		//trace(moveList.length);
 		
 		
-		if (input.LeftJustPressed)
-			moveList.push(FlxObject.LEFT);
-		else if (input.RightJustPressed)
-			moveList.push(FlxObject.RIGHT);
-			
-		if (input.UpJustPressed)
-			moveList.push(FlxObject.UP);
-		else if (input.DownJustPressed)
-			moveList.push(FlxObject.DOWN);
-		
-		moveTimer -= elapsed;
-		if (moveTimer <= 0)
-		{
-			ExecuteMove();
-		}
+		HandleMoveInput();	
+		PerformMoves(elapsed);
+	
+		HandleAttackInput(elapsed);
 		
 		
 	}
 	
-	function ExecuteMove() 
+	function HandleAttackInput(elapsed : Float) 
+	{
+		attackTimer -= elapsed;
+		if (attackTimer > 0)
+			return;
+		
+		if ( input.ShootPressed)
+			attackHoldTimer += elapsed;
+		
+		if (attackHoldTimer > 0)
+		{
+			throwDist = Std.int(attackHoldTimer / GP.PlayerAttackHoldForDistance) + 1;
+			if (throwDist > 4)	throwDist = 4;
+			
+			if (input.ShootJustReleased)
+			{
+				ThrowMine();
+				attackHoldTimer = 0;
+				attackTimer = 0.2;
+			}
+		}
+		else
+		{
+			throwDist = 0;
+		}
+			
+		
+	}
+	
+	function ThrowMine() 
+	{
+		var m : Mine = new Mine();
+		
+		var ox : Float = MathExtender.objectDir2Point(playerFacing).x * throwDist * GP.WorldTileSizeInPixel;
+		var oy : Float = MathExtender.objectDir2Point(playerFacing).y * throwDist * GP.WorldTileSizeInPixel;
+		
+		
+		m.setPosition(x + ox, y +oy);
+		
+		//m.velocity.(MathExtender.objectDir2Point(playerFacing)* GP.InitialMineVelocity
+		
+		_state.SpawnMine(m);
+	}
+	
+	
+	
+	function ExecuteCurrentMove() 
 	{
 		if (moveList.length == 0)
 			return;		// nothing to do here
@@ -72,12 +119,14 @@ class Player extends FlxSprite
 			posX--;
 			FlxTween.tween(this, { x : x - GP.WorldTileSizeInPixel }, GP.PlayerMoveTimer, { ease : FlxEase.circInOut } );
 			moveTimer = GP.PlayerMoveTimer;
+			playerFacing = FlxObject.LEFT;
 		}
 		else if (moveList[0] == FlxObject.RIGHT)
 		{
 			posX++;
 			FlxTween.tween(this, { x : x + GP.WorldTileSizeInPixel }, GP.PlayerMoveTimer, { ease : FlxEase.circInOut } );
 			moveTimer = GP.PlayerMoveTimer;
+			playerFacing = FlxObject.RIGHT;
 		}
 		
 		if (moveList[0] == FlxObject.UP)
@@ -85,15 +134,40 @@ class Player extends FlxSprite
 			posY--;
 			FlxTween.tween(this, { y : y - GP.WorldTileSizeInPixel }, GP.PlayerMoveTimer, { ease : FlxEase.circInOut } );
 			moveTimer = GP.PlayerMoveTimer;
+			playerFacing = FlxObject.UP;
 		}
 		else if (moveList[0] == FlxObject.DOWN)
 		{
 			posY++;
 			FlxTween.tween(this, { y : y + GP.WorldTileSizeInPixel }, GP.PlayerMoveTimer, { ease : FlxEase.circInOut } );
 			moveTimer = GP.PlayerMoveTimer;
+			playerFacing = FlxObject.DOWN;
 		}
 		
 		moveList.remove(moveList[0]);
+	}
+	
+	function HandleMoveInput():Void 
+	{
+		if (input.LeftJustPressed)
+			moveList.push(FlxObject.LEFT);
+		else if (input.RightJustPressed)
+			moveList.push(FlxObject.RIGHT);
+			
+		if (input.UpJustPressed)
+			moveList.push(FlxObject.UP);
+		else if (input.DownJustPressed)
+			moveList.push(FlxObject.DOWN);
+	
+	}
+	
+	function PerformMoves(elapsed : Float):Void 
+	{
+		moveTimer -= elapsed;
+		if (moveTimer <= 0)
+		{
+			ExecuteCurrentMove();
+		}
 	}
 	
 	

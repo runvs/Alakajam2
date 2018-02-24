@@ -53,6 +53,10 @@ class InputKeyboard2 extends BasicInput
 		{
 			ShootJustReleased = true;
 		}
+		if (FlxG.keys.pressed.K)
+		{
+			ShootPressed = true;
+		}
 	}
 	
 }

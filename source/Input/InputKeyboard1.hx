@@ -16,6 +16,7 @@ class InputKeyboard1 extends BasicInput
 	public override function update(elapsed : Float ) : Void
 	{
 		super.update(elapsed);
+		
 		if (FlxG.keys.justPressed.A)
 		{
 			xVal = -1;
@@ -52,6 +53,10 @@ class InputKeyboard1 extends BasicInput
 		if (FlxG.keys.justReleased.SHIFT)
 		{
 			ShootJustReleased = true;
+		}
+		if (FlxG.keys.pressed.SHIFT)
+		{
+			ShootPressed = true;
 		}
 	}
 }

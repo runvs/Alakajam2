@@ -28,6 +28,7 @@ class PlayState extends FlxState
 	
 	private var players : FlxTypedSpriteGroup<Player> = null;
 	
+	public var allMines : AdministratedList<Mine>;
 	
 	/**
 	 * Function that is called up when to state is created to set it up. 
@@ -48,8 +49,15 @@ class PlayState extends FlxState
 		////SpriteFunctions.shadeSpriteWithBorder(spr, Palette.color3, Palette.color5);
 		//add(spr);
 		
-		//players = new FlxTypedSpriteGroup<Player>();
+		allMines = new AdministratedList<Mine>();
+		add(allMines);
+		
+		
 		add(players);
+		for (p in players)
+		{
+			p.setState(this);
+		}
 		
 		ending = false;
 		overlay = new FlxSprite();
@@ -85,7 +93,6 @@ class PlayState extends FlxState
 	override public function draw() : Void
 	{
 		super.draw();
-		
 	}
 	
 	/**
@@ -102,7 +109,7 @@ class PlayState extends FlxState
 		
 		if (!ending)
 		{
-			players.update(elapsed);
+			//players.update(elapsed);
 			if (timer <= 0)
 			{
 				EndGame();
@@ -144,6 +151,11 @@ class PlayState extends FlxState
 			t.start(1,function(t:FlxTimer): Void {MenuState.setNewScore(Score); FlxG.switchState(new MenuState()); } );
 		}
 		
+	}
+	
+	public function SpawnMine ( m : Mine)
+	{
+		allMines.add(m);
 	}
 	
 }

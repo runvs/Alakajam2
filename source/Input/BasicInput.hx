@@ -17,6 +17,7 @@ class BasicInput
 	public var UpJustPressed : Bool = false;
 	public var DownJustPressed : Bool = false;
 	
+	public var ShootPressed : Bool = false;
 	public var ShootJustPressed : Bool = false;
 	public var ShootJustReleased : Bool = false;
 	
@@ -37,6 +38,8 @@ class BasicInput
 		RightJustPressed = false;
 		UpJustPressed = false;
 		DownJustPressed = false;
+		
+		ShootPressed = false;
 		ShootJustPressed = false;
 		ShootJustReleased = false;
 	}
