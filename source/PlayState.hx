@@ -34,6 +34,7 @@ class PlayState extends FlxState
 	public var allMines : AdministratedList<Mine>;
 	public var allExplosions:  AdministratedList<Explosion>;
 	
+	public var levelString : String = "";
 	public var level : Level;
 	
 	/**
@@ -41,6 +42,7 @@ class PlayState extends FlxState
 	 */
 	override public function create():Void
 	{
+		
 		super.create();
 		backgroundSprite = new FlxSprite();
 		backgroundSprite.makeGraphic(FlxG.width, FlxG.height);
@@ -50,7 +52,7 @@ class PlayState extends FlxState
 		
 		// add stuff here
 		level = new Level();
-		level.loadLevel(AssetPaths.level1__png);
+		level.loadLevel(levelString);
 		add(level);
 		
 		allMines = new AdministratedList<Mine>();
@@ -67,7 +69,7 @@ class PlayState extends FlxState
 		ending = false;
 		overlay = new FlxSprite();
 		overlay.makeGraphic(FlxG.width, FlxG.height);
-		overlay.color = Palette.color1;
+		overlay.color = FlxColor.BLACK;
 		overlay.alpha = 1;
 		add(overlay);
 	
@@ -97,6 +99,7 @@ class PlayState extends FlxState
 	override public function draw() : Void
 	{
 		super.draw();
+		LocalScreenFlash.draw();
 	}
 	
 	/**
@@ -127,6 +130,7 @@ class PlayState extends FlxState
 			
 			timer -= FlxG.elapsed;
 		}
+		LocalScreenFlash.update(elapsed);
 	}	
 	
 	function CheckStupidPlayer() 
@@ -237,8 +241,6 @@ class PlayState extends FlxState
 		if (!ending)
 		{
 			ending = true;
-			
-			
 			
 			FlxTween.tween(overlay, {alpha : 1.0}, 0.9);
 			

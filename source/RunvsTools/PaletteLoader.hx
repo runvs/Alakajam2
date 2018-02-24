@@ -58,27 +58,14 @@ class PaletteLoader
 				var idx : Int = Std.parseInt(arr[1]);
 				if (idx == 0) idx = 3; else if (idx < 3) idx = 6 - idx; else idx = 5 - idx;
 				colorName = "color" + Std.string(idx);
+				colorName = StringTools.replace(colorName, "-", "_");
 			}
-			else if (arr[0] == "secondary-1")
+			else 
 			{
-				var idx : Int = Std.parseInt(arr[1]);
-				if (idx == 0) idx = 3; else if (idx < 3) idx = 6 - idx; else idx = 5 - idx;
-				colorName = "secondary1_" + Std.string(idx);
-			}
-			else if (arr[0] == "secondary-2")
-			{
-				var idx : Int = Std.parseInt(arr[1]);
-				if (idx == 0) idx = 3; else if (idx < 3) idx = 6 - idx; else idx = 5 - idx;
-				colorName = "secondary2_" + Std.string(idx);
-			}
-			else if (arr[0] == "complement")
-			{
-				var idx : Int = Std.parseInt(arr[1]);
-				if (idx == 0) idx = 3; else if (idx < 3) idx = 6 - idx; else idx = 5 - idx;
-				colorName = "complement" + Std.string(idx);
+				colorName = arr[0];
 			}
 			
-			trace(l + "       " + colorName + " " + r + " " + g + " " + b);
+			trace(l + "       \n" + colorName + " " + r + " " + g + " " + b);
 			var ic : Int =  (b)  + (g << 8) + (r << 8 << 8);
 			m[colorName] = ic;
 		}

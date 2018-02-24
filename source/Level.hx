@@ -57,13 +57,21 @@ class Level extends FlxTypedSpriteGroup<Tile>
 				spawned = true;
 				collisionArray[i + j * GP.WorldSizeX] = 2;
 			}
-			if (c.red == 255 && c.green == 0)
+			else if (c.red == 255 && c.green == 0)
 			{
 				
 				var idx : Int = c.blue;
 				if (idx >= 4) idx = 3;
-				trace(idx);
+				//trace(idx);
 				spawnPositions[idx].set(i, j);
+			}
+			else if (c.red == 0 && c.green == 255 && c.blue == 0)
+			{
+				trace("water");
+				var w : Tile= new Tile(i,j,3);
+				add(w);
+				spawned = true;
+				collisionArray[i + i * GP.WorldSizeX] = 3;
 			}
 			
 			if (!spawned)
@@ -75,6 +83,18 @@ class Level extends FlxTypedSpriteGroup<Tile>
 		}
 		
 		
+	}
+	
+	public function isTileDetection (X:Int, Y:Int) : Bool
+	{
+		if (X < 0 || Y < 0 || X >= GP.WorldSizeX || Y >= GP.WorldSizeY) return false;
+		
+		var idx : Int = X + Y * GP.WorldSizeX;
+		//trace("isTileFree ", X, Y, idx);
+		if (idx <0 || idx >= GP.WorldSizeX*GP.WorldSizeY)
+			return false;
+		
+		return ( collisionArray[idx] == 3);
 	}
 
 	public function isTileBreakable(X:Int, Y:Int) : Bool
@@ -98,7 +118,7 @@ class Level extends FlxTypedSpriteGroup<Tile>
 		if (idx <0 || idx >= GP.WorldSizeX*GP.WorldSizeY)
 			return false;
 		
-		return (collisionArray[idx] == 0 || collisionArray[idx] == 2);
+		return (collisionArray[idx] == 0 || collisionArray[idx] == 2 || collisionArray[idx] == 3);
 	}
 	
 	
@@ -111,13 +131,14 @@ class Level extends FlxTypedSpriteGroup<Tile>
 		if (idx <0 || idx >= GP.WorldSizeX*GP.WorldSizeY)
 			return false;
 		
-		return (collisionArray[idx] == 0);
+		return (collisionArray[idx] == 0 || collisionArray[idx] == 3);
 	}
+	
+	
 	
 	override public function draw():Void 
 	{
 		super.draw();
-	
 	}
 	
 	public function BreakBreakableTile(X:Int, Y:Int)

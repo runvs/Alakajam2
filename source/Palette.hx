@@ -8,7 +8,7 @@ import flixel.util.FlxColor;
  */
 
  //@:build(PaletteLoader.loadAllPalettes())
- @:build(PaletteLoader.LoadPalette("assets/data/palettes/paletton.gpl"))
+ @:build(PaletteLoader.LoadPalette("assets/data/palettes/pal.gpl"))
 class Palette
 {
 	

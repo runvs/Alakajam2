@@ -20,7 +20,6 @@ class InputKeyboard1 extends BasicInput
 		if (FlxG.keys.justPressed.A)
 		{
 			xVal = -1;
-			trace("left");
 			LeftJustPressed = true;
 			anyPressed = true;
 		}

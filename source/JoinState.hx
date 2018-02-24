@@ -10,7 +10,6 @@ import flixel.text.FlxText;
  */
 class JoinState extends FlxState
 {
-	
 	private var _all : Array<JoinEntity> = [];
 	private var _numberOfPlayersJoined = 0;
 	private var _age : Float = 0;
@@ -55,7 +54,7 @@ class JoinState extends FlxState
 			}
 			if (_all[i].Input.ShootJustPressed)
 			{
-				_all[i].text.text = _all[i].Input.name + " joined";
+				_all[i].text.text = _all[i].Input.name + "\njoined";
 				
 				_numberOfPlayersJoined++;
 				_all[i].alreadyJoined = true;
@@ -100,9 +99,17 @@ class JoinState extends FlxState
 			}
 		}
 		
+		ps.levelString = SelectRandomLevel();
+		
 		FlxG.switchState(ps);
-		
-		
+	}
+	
+	function SelectRandomLevel() : String
+	{
+		var arr : Array<String>  = FileList.getFileListRunTime("assets/data/", ".png");
+		var idx = FlxG.random.int(0, arr.length - 1);
+		trace(arr[idx]);
+		return arr[idx];
 	}
 	
 	override public function draw():Void 
@@ -113,6 +120,4 @@ class JoinState extends FlxState
 			_all[i].text.draw();
 		}
 	}
-	
-	
 }

@@ -18,7 +18,7 @@ class LocalScreenFlash
 	static private function init()
 	{
 		list = new AdministratedList<FlxSprite>();
-		glow = new GlowOverlay( -1000, -1000, FlxG.camera, 400, 1, 0.5, false);
+		glow = new GlowOverlay( -1000, -1000, FlxG.camera, 200, 1, 0.5, false);
 		glow.color = FlxColor.fromRGB(255, 255, 255, 75);
 		hasBeenInit = true;
 	}

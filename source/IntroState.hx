@@ -28,7 +28,7 @@ class IntroState extends FlxState
 	{
 		super.create();
 		//FlxG.camera.bgColor = Palette.primary3();
-		//FlxG.mouse.visible = false;
+		FlxG.mouse.visible = false;
 		
 		bg = new FlxSprite();
 		bg.makeGraphic(FlxG.width, FlxG.height, FlxColor.WHITE);

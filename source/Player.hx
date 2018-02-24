@@ -120,10 +120,14 @@ class Player extends FlxSprite
 			return;
 		
 		
+		if ( input.ShootJustPressed)
+		{
+			UnHide();
+		}
 			
 		if ( input.ShootPressed)
 		{
-			UnHide();
+			
 			attackHoldTimer += elapsed;
 		}
 		
@@ -208,6 +212,10 @@ class Player extends FlxSprite
 			moveTimer = GP.PlayerMoveTimer;
 			playerFacing = FlxObject.DOWN;
 		}
+		if (_state.level.isTileDetection(posX, posY))
+		{
+			
+		}
 		
 		moveList.remove(moveList[0]);
 	}
@@ -256,6 +264,8 @@ class Player extends FlxSprite
 		}
 		invisTween = FlxTween.tween(this, { alpha : 1 }, 0.25);
 		invisTimer = t;
+		
+		LocalScreenFlash.addFlash(x, y, 0.35, FlxColor.fromRGB(255,255,255,20));
 	}
 	
 	
