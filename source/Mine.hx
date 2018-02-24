@@ -26,23 +26,35 @@ class Mine extends FlxSprite
 		super();
 		_state = s;
 		id = pID;
-		this.makeGraphic(Std.int(GP.WorldTileSizeInPixel / 2), Std.int(GP.WorldTileSizeInPixel / 2));
+		//this.makeGraphic(Std.int(GP.WorldTileSizeInPixel / 2), Std.int(GP.WorldTileSizeInPixel / 2));
+		this.loadGraphic(AssetPaths.mine__png, true, 16, 16);
+		this.animation.add("fly", [for (i in 0...4) i], 13, true);
 		
+		this.animation.add("p0", [for (i in 4...9) i], 10, true);
+		this.animation.add("p1", [for (i in 9...14) i], 10, true);
+		this.animation.add("p2", [for (i in 15...19) i], 10, true);
+		this.animation.add("p3", [for (i in 19...24) i], 10, true);
+		
+		this.animation.play("fly");
+		this.origin.set();
+		this.scale.set(2,2);
 		
 		tx = _tx;
 		ty = _ty;
 		//trace(px, py, tx, ty);
-		this.x = (px + 0.25)* GP.WorldTileSizeInPixel ;
-		this.y = (py + 0.25) * GP.WorldTileSizeInPixel;
+		this.x = (px )* GP.WorldTileSizeInPixel;
+		this.y = (py ) * GP.WorldTileSizeInPixel;
 		
 		FlxTween.tween(this, 
-			{ x : (tx + 0.25) * GP.WorldTileSizeInPixel, y : (ty + 0.25) * GP.WorldTileSizeInPixel }, 
+			{ x : (tx ) * GP.WorldTileSizeInPixel, y : (ty ) * GP.WorldTileSizeInPixel }, 
 			GP.MineFlyTimer, 
 			{ ease:FlxEase.quartOut, 
 			onComplete: function (t) 
 			{
 				mode = 1;
-				FlxTween.color(this, 0.3, FlxColor.WHITE, FlxColor.RED, {type:FlxTween.PINGPONG});
+				
+				this.animation.play("p" + Std.string(pID), true);
+				//FlxTween.color(this, 0.3, FlxColor.WHITE, FlxColor.RED, {type:FlxTween.PINGPONG});
 			} 
 		} );
 		

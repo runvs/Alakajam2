@@ -48,9 +48,13 @@ class Player extends FlxSprite
 		this.makeGraphic(Std.int(GP.WorldTileSizeInPixel), Std.int(GP.WorldTileSizeInPixel), FlxColor.WHITE, true);
 		
 		targetTile = new FlxSprite();
-		targetTile.makeGraphic(Std.int(GP.WorldTileSizeInPixel), Std.int(GP.WorldTileSizeInPixel));
-		targetTile.alpha = 0.4;
-		targetTile.color = FlxColor.CYAN;
+		//targetTile.makeGraphic(Std.int(GP.WorldTileSizeInPixel), Std.int(GP.WorldTileSizeInPixel));
+		targetTile.loadGraphic(AssetPaths.crosshair__png, true, 16, 16);
+		targetTile.animation.add("idle", [for (i in 0...10) i], 15);
+		targetTile.animation.play("idle");
+		targetTile.scale.set(2, 2);
+		targetTile.alpha = 0.8;
+		//targetTile.color = FlxColor.CYAN;
 	}
 	
 	
@@ -65,7 +69,9 @@ class Player extends FlxSprite
 	{
 		super.update(elapsed);
 		input.update(elapsed);
-	
+		
+		targetTile.update(elapsed);
+		
 		HandleInvisibility(elapsed);
 		
 		//trace(moveList.length);
@@ -264,6 +270,6 @@ class Player extends FlxSprite
 	
 	public function KillMe()
 	{
-		alive = true;
+		alive = false;
 	}
 }
