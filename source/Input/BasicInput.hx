@@ -21,6 +21,8 @@ class BasicInput
 	public var ShootJustPressed : Bool = false;
 	public var ShootJustReleased : Bool = false;
 	
+	public var DetonateJustPressed : Bool = false;
+	
 	public function update(elapsed: Float) : Void 
 	{
 		// reset the values
@@ -42,5 +44,7 @@ class BasicInput
 		ShootPressed = false;
 		ShootJustPressed = false;
 		ShootJustReleased = false;
+		
+		DetonateJustPressed = false;
 	}
 }

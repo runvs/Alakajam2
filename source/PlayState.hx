@@ -4,6 +4,7 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.group.FlxSpriteGroup;
+import flixel.math.FlxPoint;
 import flixel.text.FlxText;
 import flixel.tweens.FlxTween;
 import flixel.ui.FlxButton;
@@ -31,6 +32,9 @@ class PlayState extends FlxState
 	private var players : FlxTypedSpriteGroup<Player> = null;
 	
 	public var allMines : AdministratedList<Mine>;
+	public var allExplosions:  AdministratedList<Explosion>;
+	
+	public var level : Level;
 	
 	/**
 	 * Function that is called up when to state is created to set it up. 
@@ -40,16 +44,14 @@ class PlayState extends FlxState
 		super.create();
 		backgroundSprite = new FlxSprite();
 		backgroundSprite.makeGraphic(FlxG.width, FlxG.height);
-		backgroundSprite.color = FlxColor.BLACK;
+		backgroundSprite.color = FlxColor.GRAY;
 		add(backgroundSprite);
 		
 		
 		// add stuff here
-		
-		//var spr : FlxSprite = new FlxSprite(100, 100);
-		//SpriteFunctions.createRoundedCornerBox(spr, 100, 100, 4);
-		////SpriteFunctions.shadeSpriteWithBorder(spr, Palette.color3, Palette.color5);
-		//add(spr);
+		level = new Level();
+		level.loadLevel(AssetPaths.level1__png);
+		add(level);
 		
 		allMines = new AdministratedList<Mine>();
 		add(allMines);
@@ -58,6 +60,9 @@ class PlayState extends FlxState
 		SpawnPlayers();
 		add(players);
 	
+		
+		allExplosions = new AdministratedList<Explosion>();
+		add(allExplosions);
 		
 		ending = false;
 		overlay = new FlxSprite();
@@ -71,10 +76,10 @@ class PlayState extends FlxState
 		timer = 25;
 		timerText = new FlxText(10, 10, 0, "0", 16);
 		timerText.color = Palette.color5;
-		add(timerText);
+		//add(timerText);
 		scoreText = new FlxText(10, 32, 0, "0", 16);
 		scoreText.color = Palette.color5;
-		add(scoreText);
+		//add(scoreText);
 		
 	}
 	
@@ -130,15 +135,9 @@ class PlayState extends FlxState
 		{
 			var p : Player = new Player(i, playersToJoinInput[i], this);
 			
-			if (p.id == 0)
-				p.setTilePosition( 3 , 3 );
-			else if (p.id == 1)
-				p.setTilePosition( 25 , 20 );
-			else if (p.id == 2)
-				p.setTilePosition( 3, 20 );
-			else if (p.id == 3)
-				p.setTilePosition( 25 , 3 );
+			var pos : FlxPoint = level.spawnPositions[p.id];
 			
+			p.setTilePosition(Std.int(pos.x), Std.int(pos.y));
 			players.add(p);
 		}
 	}
@@ -163,6 +162,64 @@ class PlayState extends FlxState
 	public function SpawnMine ( m : Mine)
 	{
 		allMines.add(m);
+	}
+	
+	public function ExplodeTile (tx: Int, ty : Int)
+	{
+		for (p in players)
+		{
+			if (p.posX == tx && p.posY == ty)
+				p.KillMe();
+		}
+		
+		for (i in 0 ... GP.WorldExplosionsPerTile)
+		{
+			var t : FlxTimer = new FlxTimer();
+			t.start(FlxG.random.float(0, 0.25), function (t)
+			{
+				var px : Float = (tx - 1 + FlxG.random.float(0, 1) ) * GP.WorldTileSizeInPixel ;
+				var py : Float = (ty - 1 + FlxG.random.float(0,1) ) * GP.WorldTileSizeInPixel ;
+				var e : Explosion = new Explosion(px, py, Std.int(1.5 * GP.WorldTileSizeInPixel));
+				SpawnExplosion(e);
+			});
+		}
+	}
+	
+	public function SpawnExplosion(e : Explosion)
+	{
+		allExplosions.add(e);
+	}
+	
+	public function getMineCountForPlayerX(pID : Int ) : Int
+	{
+		var c : Int = 0;
+		for (m in allMines)
+		{
+			if (!m.alive) continue;
+			if (m.id == pID)
+				c++;
+		}
+		return c;
+	}
+	
+	public function getFirstMineForPlayerX(pID : Int) : Mine
+	{
+		for (m in allMines)
+		{
+			if (!m.alive) continue;
+			if (m.id == pID)
+			{
+				return m;
+			}
+		}
+		return  null;
+	}
+	
+	public function isTileFree(X:Int, Y:Int)
+	{
+		var noPlayer : Bool = true;
+		
+		return level.isTileFree(X, Y);
 	}
 	
 }

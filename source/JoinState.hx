@@ -34,9 +34,12 @@ class JoinState extends FlxState
 	override public function update(elapsed:Float):Void 
 	{
 		super.update(elapsed);
-		_age += elapsed;
 		
 		var resort : Bool = false;
+		if (_age == 0)	resort = true;
+		
+		_age += elapsed;
+	
 		
 		for (i in 0 ... _all.length)
 		{

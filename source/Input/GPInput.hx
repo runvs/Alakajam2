@@ -60,6 +60,11 @@ class GPInput extends BasicInput
 			ShootPressed = true;
 		}
 		
+		if (_gamepad.justPressed.B)
+		{
+			DetonateJustPressed = true;
+		}
+		
 		
 		if (Math.abs(xVal) > 0.1 || Math.abs(yVal) > 0.1 || ShootJustPressed)
 		{

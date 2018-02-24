@@ -33,8 +33,7 @@ class Player extends FlxSprite
 	
 	private var targetTile : FlxSprite;
 	
-	
-	
+	private var MaxMineCount : Int = GP.PlayerMineStartCount;
 	
 	public function new(i : Int, bi: BasicInput, s: PlayState) 
 	{
@@ -70,9 +69,24 @@ class Player extends FlxSprite
 		HandleMoveInput();	
 		PerformMoves(elapsed);
 	
-		HandleAttackInput(elapsed);
+		HandleLayMineInput(elapsed);
 		UpdateTargetTile();
-		
+	
+		HandleDetonateInput();
+	}
+	
+	function HandleDetonateInput() 
+	{
+		if (input.DetonateJustPressed)
+		{
+			var m : Mine = _state.getFirstMineForPlayerX(id);
+			
+			if (m != null && m.mode == 1 )
+			{
+				m.ExplodeMe();
+			}
+			
+		}
 	}
 	
 	function UpdateTargetTile() 
@@ -87,12 +101,14 @@ class Player extends FlxSprite
 		}
 	}
 	
-	function HandleAttackInput(elapsed : Float) 
+	function HandleLayMineInput(elapsed : Float) 
 	{
 		attackTimer -= elapsed;
 		if (attackTimer > 0)
 			return;
 		
+		
+			
 		if ( input.ShootPressed)
 			attackHoldTimer += elapsed;
 		
@@ -103,9 +119,19 @@ class Player extends FlxSprite
 			
 			if (input.ShootJustReleased)
 			{
-				ThrowMine();
+				if (_state.getMineCountForPlayerX(id) >= MaxMineCount)
+				{	
+					// todo dead man's click
+					
+				}
+				else
+				{
+					ThrowMine();
+					
+				}
 				attackHoldTimer = 0;
 				attackTimer = 0.2;
+				throwDist = 0;
 			}
 		}
 		else
@@ -121,7 +147,7 @@ class Player extends FlxSprite
 		var ox : Int = Std.int(MathExtender.objectDir2Point(playerFacing).x) + Std.int(MathExtender.objectDir2Point(playerFacing).x) * throwDist;
 		var oy : Int = Std.int(MathExtender.objectDir2Point(playerFacing).y) + Std.int(MathExtender.objectDir2Point(playerFacing).y) * throwDist;
 
-		var m : Mine = new Mine(posX, posY, posX + ox, posY + oy, this.id );
+		var m : Mine = new Mine(posX, posY, posX + ox, posY + oy, this.id, _state );
 		
 		
 		_state.SpawnMine(m);
@@ -134,14 +160,15 @@ class Player extends FlxSprite
 		if (moveList.length == 0)
 			return;		// nothing to do here
 		
-		if (moveList[0] == FlxObject.LEFT)
+		if (moveList[0] == FlxObject.LEFT && _state.isTileFree(posX-1,posY))
 		{
+			trace("left--");
 			posX--;
 			FlxTween.tween(this, { x : x - GP.WorldTileSizeInPixel }, GP.PlayerMoveTimer, { ease : FlxEase.circInOut } );
 			moveTimer = GP.PlayerMoveTimer;
 			playerFacing = FlxObject.LEFT;
 		}
-		else if (moveList[0] == FlxObject.RIGHT)
+		else if (moveList[0] == FlxObject.RIGHT && _state.isTileFree(posX+1,posY))
 		{
 			posX++;
 			FlxTween.tween(this, { x : x + GP.WorldTileSizeInPixel }, GP.PlayerMoveTimer, { ease : FlxEase.circInOut } );
@@ -149,14 +176,14 @@ class Player extends FlxSprite
 			playerFacing = FlxObject.RIGHT;
 		}
 		
-		if (moveList[0] == FlxObject.UP)
+		if (moveList[0] == FlxObject.UP && _state.isTileFree(posX,posY-1))
 		{
 			posY--;
 			FlxTween.tween(this, { y : y - GP.WorldTileSizeInPixel }, GP.PlayerMoveTimer, { ease : FlxEase.circInOut } );
 			moveTimer = GP.PlayerMoveTimer;
 			playerFacing = FlxObject.UP;
 		}
-		else if (moveList[0] == FlxObject.DOWN)
+		else if (moveList[0] == FlxObject.DOWN && _state.isTileFree(posX,posY+1))
 		{
 			posY++;
 			FlxTween.tween(this, { y : y + GP.WorldTileSizeInPixel }, GP.PlayerMoveTimer, { ease : FlxEase.circInOut } );
@@ -200,4 +227,9 @@ class Player extends FlxSprite
 			targetTile.draw();
 	}
 	
+	
+	public function KillMe()
+	{
+		alive = true;
+	}
 }
