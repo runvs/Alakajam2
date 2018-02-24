@@ -33,6 +33,9 @@ class Player extends FlxSprite
 	
 	private var targetTile : FlxSprite;
 	
+	
+	
+	
 	public function new(i : Int, bi: BasicInput, s: PlayState) 
 	{
 		super();
@@ -43,9 +46,18 @@ class Player extends FlxSprite
 		this.makeGraphic(Std.int(GP.WorldTileSizeInPixel), Std.int(GP.WorldTileSizeInPixel), FlxColor.WHITE, true);
 		
 		targetTile = new FlxSprite();
-		
+		targetTile.makeGraphic(Std.int(GP.WorldTileSizeInPixel), Std.int(GP.WorldTileSizeInPixel));
+		targetTile.alpha = 0.4;
+		targetTile.color = FlxColor.CYAN;
 	}
 	
+	
+	public function setTilePosition ( px : Int, py : Int)
+	{
+		this.setPosition(px * GP.WorldTileSizeInPixel, py * GP.WorldTileSizeInPixel);
+		posX = px;
+		posY = py;
+	}
 	
 	override public function update(elapsed:Float):Void 
 	{
@@ -59,8 +71,20 @@ class Player extends FlxSprite
 		PerformMoves(elapsed);
 	
 		HandleAttackInput(elapsed);
+		UpdateTargetTile();
 		
-		
+	}
+	
+	function UpdateTargetTile() 
+	{
+		if (attackHoldTimer <= 0)
+			targetTile.setPosition( -500, -500);
+		else
+		{
+			var ox : Float = MathExtender.objectDir2Point(playerFacing).x + MathExtender.objectDir2Point(playerFacing).x * throwDist;
+			var oy : Float = MathExtender.objectDir2Point(playerFacing).y + MathExtender.objectDir2Point(playerFacing).y * throwDist;
+			targetTile.setPosition(GP.WorldTileSizeInPixel * (posX + ox), GP.WorldTileSizeInPixel * (posY + oy));
+		}
 	}
 	
 	function HandleAttackInput(elapsed : Float) 
@@ -75,7 +99,7 @@ class Player extends FlxSprite
 		if (attackHoldTimer > 0)
 		{
 			throwDist = Std.int(attackHoldTimer / GP.PlayerAttackHoldForDistance) + 1;
-			if (throwDist > 4)	throwDist = 4;
+			if (throwDist > GP.PlayerMaxThrowDistance)	throwDist = GP.PlayerMaxThrowDistance;
 			
 			if (input.ShootJustReleased)
 			{
@@ -94,15 +118,11 @@ class Player extends FlxSprite
 	
 	function ThrowMine() 
 	{
-		var m : Mine = new Mine();
+		var ox : Int = Std.int(MathExtender.objectDir2Point(playerFacing).x) + Std.int(MathExtender.objectDir2Point(playerFacing).x) * throwDist;
+		var oy : Int = Std.int(MathExtender.objectDir2Point(playerFacing).y) + Std.int(MathExtender.objectDir2Point(playerFacing).y) * throwDist;
+
+		var m : Mine = new Mine(posX, posY, posX + ox, posY + oy, this.id );
 		
-		var ox : Float = MathExtender.objectDir2Point(playerFacing).x * throwDist * GP.WorldTileSizeInPixel;
-		var oy : Float = MathExtender.objectDir2Point(playerFacing).y * throwDist * GP.WorldTileSizeInPixel;
-		
-		
-		m.setPosition(x + ox, y +oy);
-		
-		//m.velocity.(MathExtender.objectDir2Point(playerFacing)* GP.InitialMineVelocity
 		
 		_state.SpawnMine(m);
 	}

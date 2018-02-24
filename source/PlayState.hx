@@ -131,13 +131,13 @@ class PlayState extends FlxState
 			var p : Player = new Player(i, playersToJoinInput[i], this);
 			
 			if (p.id == 0)
-				p.setPosition( 3 * GP.WorldTileSizeInPixel, 3 * GP.WorldTileSizeInPixel);
+				p.setTilePosition( 3 , 3 );
 			else if (p.id == 1)
-				p.setPosition( 25 * GP.WorldTileSizeInPixel, 20 * GP.WorldTileSizeInPixel);
+				p.setTilePosition( 25 , 20 );
 			else if (p.id == 2)
-				p.setPosition( 3 * GP.WorldTileSizeInPixel, 20 * GP.WorldTileSizeInPixel);
+				p.setTilePosition( 3, 20 );
 			else if (p.id == 3)
-				p.setPosition( 25 * GP.WorldTileSizeInPixel, 3 * GP.WorldTileSizeInPixel);
+				p.setTilePosition( 25 , 3 );
 			
 			players.add(p);
 		}
