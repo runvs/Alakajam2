@@ -32,13 +32,11 @@ class Mine extends FlxSprite
 		tx = _tx;
 		ty = _ty;
 		//trace(px, py, tx, ty);
-		this.x = px * GP.WorldTileSizeInPixel;
-		this.y = py * GP.WorldTileSizeInPixel;
-		
-		//this.offset.set(
+		this.x = (px + 0.25)* GP.WorldTileSizeInPixel ;
+		this.y = (py + 0.25) * GP.WorldTileSizeInPixel;
 		
 		FlxTween.tween(this, 
-			{ x : tx * GP.WorldTileSizeInPixel, y : ty * GP.WorldTileSizeInPixel }, 
+			{ x : (tx + 0.25) * GP.WorldTileSizeInPixel, y : (ty + 0.25) * GP.WorldTileSizeInPixel }, 
 			GP.MineFlyTimer, 
 			{ ease:FlxEase.quartOut, 
 			onComplete: function (t) 

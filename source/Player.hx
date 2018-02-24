@@ -35,6 +35,9 @@ class Player extends FlxSprite
 	
 	private var MaxMineCount : Int = GP.PlayerMineStartCount;
 	
+	private var invisTimer : Float = GP.PlayerInvisStartTimer;
+	private var invisTween : FlxTween = null;
+	
 	public function new(i : Int, bi: BasicInput, s: PlayState) 
 	{
 		super();
@@ -62,6 +65,8 @@ class Player extends FlxSprite
 	{
 		super.update(elapsed);
 		input.update(elapsed);
+	
+		HandleInvisibility(elapsed);
 		
 		//trace(moveList.length);
 		
@@ -79,6 +84,7 @@ class Player extends FlxSprite
 	{
 		if (input.DetonateJustPressed)
 		{
+			UnHide(0.7);
 			var m : Mine = _state.getFirstMineForPlayerX(id);
 			
 			if (m != null && m.mode == 1 )
@@ -110,7 +116,10 @@ class Player extends FlxSprite
 		
 			
 		if ( input.ShootPressed)
+		{
+			UnHide();
 			attackHoldTimer += elapsed;
+		}
 		
 		if (attackHoldTimer > 0)
 		{
@@ -138,19 +147,18 @@ class Player extends FlxSprite
 		{
 			throwDist = 0;
 		}
-			
-		
 	}
 	
 	function ThrowMine() 
 	{
+		UnHide();
 		var ox : Int = Std.int(MathExtender.objectDir2Point(playerFacing).x) + Std.int(MathExtender.objectDir2Point(playerFacing).x) * throwDist;
 		var oy : Int = Std.int(MathExtender.objectDir2Point(playerFacing).y) + Std.int(MathExtender.objectDir2Point(playerFacing).y) * throwDist;
 
 		var tx : Int = posX + ox;
 		var ty : Int = posY + oy;
 		
-		if (_state.level.isTileFree(tx,ty))
+		if (_state.level.isTileShootable(tx,ty))
 		{	
 			var m : Mine = new Mine(posX, posY, tx, ty, this.id, _state );
 			_state.SpawnMine(m);
@@ -164,15 +172,15 @@ class Player extends FlxSprite
 		if (moveList.length == 0)
 			return;		// nothing to do here
 		
-		if (moveList[0] == FlxObject.LEFT && _state.isTileFree(posX-1,posY))
+		if (moveList[0] == FlxObject.LEFT && _state.isTileWalkable(posX-1,posY))
 		{
-			trace("left--");
+			//trace("left--");
 			posX--;
 			FlxTween.tween(this, { x : x - GP.WorldTileSizeInPixel }, GP.PlayerMoveTimer, { ease : FlxEase.circInOut } );
 			moveTimer = GP.PlayerMoveTimer;
 			playerFacing = FlxObject.LEFT;
 		}
-		else if (moveList[0] == FlxObject.RIGHT && _state.isTileFree(posX+1,posY))
+		else if (moveList[0] == FlxObject.RIGHT && _state.isTileWalkable(posX+1,posY))
 		{
 			posX++;
 			FlxTween.tween(this, { x : x + GP.WorldTileSizeInPixel }, GP.PlayerMoveTimer, { ease : FlxEase.circInOut } );
@@ -180,14 +188,14 @@ class Player extends FlxSprite
 			playerFacing = FlxObject.RIGHT;
 		}
 		
-		if (moveList[0] == FlxObject.UP && _state.isTileFree(posX,posY-1))
+		if (moveList[0] == FlxObject.UP && _state.isTileWalkable(posX,posY-1))
 		{
 			posY--;
 			FlxTween.tween(this, { y : y - GP.WorldTileSizeInPixel }, GP.PlayerMoveTimer, { ease : FlxEase.circInOut } );
 			moveTimer = GP.PlayerMoveTimer;
 			playerFacing = FlxObject.UP;
 		}
-		else if (moveList[0] == FlxObject.DOWN && _state.isTileFree(posX,posY+1))
+		else if (moveList[0] == FlxObject.DOWN && _state.isTileWalkable(posX,posY+1))
 		{
 			posY++;
 			FlxTween.tween(this, { y : y + GP.WorldTileSizeInPixel }, GP.PlayerMoveTimer, { ease : FlxEase.circInOut } );
@@ -221,6 +229,28 @@ class Player extends FlxSprite
 		}
 	}
 	
+	function HandleInvisibility(elapsed:Float):Void 
+	{
+		invisTimer -= elapsed;
+		if (invisTimer < 0 && invisTimer +elapsed >= 0 )	// just crossed -> fade to dark
+		{
+			if (invisTween != null)
+			{
+				invisTween.cancel();
+			}
+			invisTween = FlxTween.tween(this, { alpha : 0 }, 0.75);
+		}
+	}
+	
+	public function UnHide(t: Float = 1 ) : Void
+	{
+		if (invisTween != null)
+		{
+			invisTween.cancel();
+		}
+		invisTween = FlxTween.tween(this, { alpha : 1 }, 0.25);
+		invisTimer = t;
+	}
 	
 	
 	override public function draw():Void 
