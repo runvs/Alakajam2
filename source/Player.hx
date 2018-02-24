@@ -150,7 +150,7 @@ class Player extends FlxSprite
 		var tx : Int = posX + ox;
 		var ty : Int = posY + oy;
 		
-		if (_state.level.isTileFree(tx,ty))
+		if (_state.level.isTileShootable(tx,ty))
 		{	
 			var m : Mine = new Mine(posX, posY, tx, ty, this.id, _state );
 			_state.SpawnMine(m);
@@ -164,15 +164,15 @@ class Player extends FlxSprite
 		if (moveList.length == 0)
 			return;		// nothing to do here
 		
-		if (moveList[0] == FlxObject.LEFT && _state.isTileFree(posX-1,posY))
+		if (moveList[0] == FlxObject.LEFT && _state.isTileWalkable(posX-1,posY))
 		{
-			trace("left--");
+			//trace("left--");
 			posX--;
 			FlxTween.tween(this, { x : x - GP.WorldTileSizeInPixel }, GP.PlayerMoveTimer, { ease : FlxEase.circInOut } );
 			moveTimer = GP.PlayerMoveTimer;
 			playerFacing = FlxObject.LEFT;
 		}
-		else if (moveList[0] == FlxObject.RIGHT && _state.isTileFree(posX+1,posY))
+		else if (moveList[0] == FlxObject.RIGHT && _state.isTileWalkable(posX+1,posY))
 		{
 			posX++;
 			FlxTween.tween(this, { x : x + GP.WorldTileSizeInPixel }, GP.PlayerMoveTimer, { ease : FlxEase.circInOut } );
@@ -180,14 +180,14 @@ class Player extends FlxSprite
 			playerFacing = FlxObject.RIGHT;
 		}
 		
-		if (moveList[0] == FlxObject.UP && _state.isTileFree(posX,posY-1))
+		if (moveList[0] == FlxObject.UP && _state.isTileWalkable(posX,posY-1))
 		{
 			posY--;
 			FlxTween.tween(this, { y : y - GP.WorldTileSizeInPixel }, GP.PlayerMoveTimer, { ease : FlxEase.circInOut } );
 			moveTimer = GP.PlayerMoveTimer;
 			playerFacing = FlxObject.UP;
 		}
-		else if (moveList[0] == FlxObject.DOWN && _state.isTileFree(posX,posY+1))
+		else if (moveList[0] == FlxObject.DOWN && _state.isTileWalkable(posX,posY+1))
 		{
 			posY++;
 			FlxTween.tween(this, { y : y + GP.WorldTileSizeInPixel }, GP.PlayerMoveTimer, { ease : FlxEase.circInOut } );

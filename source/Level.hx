@@ -9,7 +9,7 @@ import flixel.util.FlxColor;
  * ...
  * @author 
  */
-class Level extends FlxSpriteGroup
+class Level extends FlxTypedSpriteGroup<Tile>
 {
 
 	public var spawnPositions : Array<FlxPoint>;
@@ -41,29 +41,68 @@ class Level extends FlxSpriteGroup
 		{
 			var c : FlxColor = img.pixels.getPixel32(i, j);			
 			//trace(i, j, c.red, c.green, c.blue, c.alpha);
+			var spawned : Bool = false;
 			
 			if (c == FlxColor.WHITE)
 			{
-				var w : FlxSprite = new FlxSprite();
-				w.makeGraphic(Std.int(GP.WorldTileSizeInPixel), Std.int(GP.WorldTileSizeInPixel), FlxColor.YELLOW);
-				w.setPosition(i * GP.WorldTileSizeInPixel, j * GP.WorldTileSizeInPixel);
+				var w : Tile= new Tile(i,j,1);
 				add(w);
+				spawned = true;
 				collisionArray[i + j * GP.WorldSizeX] = 1;
+			}
+			else if (c.red == 100 && c.green == 100 && c.blue == 100)
+			{
+				var w : Tile = new Tile(i, j, 2);
+				add(w);
+				spawned = true;
+				collisionArray[i + j * GP.WorldSizeX] = 2;
 			}
 			if (c.red == 255 && c.green == 0)
 			{
+				
 				var idx : Int = c.blue;
 				if (idx >= 4) idx = 3;
 				trace(idx);
 				spawnPositions[idx].set(i, j);
 			}
 			
+			if (!spawned)
+			{
+				var w : Tile = new Tile(i, j, 0);
+				add(w);
+			}
+			
 		}
 		
 		
 	}
+
+	public function isTileBreakable(X:Int, Y:Int) : Bool
+	{
+		if (X < 0 || Y < 0 || X >= GP.WorldSizeX || Y >= GP.WorldSizeY) return false;
+		
+		var idx : Int = X + Y * GP.WorldSizeX;
+		//trace("isTileFree ", X, Y, idx);
+		if (idx <0 || idx >= GP.WorldSizeX*GP.WorldSizeY)
+			return false;
+		
+		return ( collisionArray[idx] == 2);
+	}
 	
-	public function isTileFree(X:Int, Y:Int)
+	public function isTileShootable(X:Int, Y:Int) : Bool
+	{
+		if (X < 0 || Y < 0 || X >= GP.WorldSizeX || Y >= GP.WorldSizeY) return false;
+		
+		var idx : Int = X + Y * GP.WorldSizeX;
+		//trace("isTileFree ", X, Y, idx);
+		if (idx <0 || idx >= GP.WorldSizeX*GP.WorldSizeY)
+			return false;
+		
+		return (collisionArray[idx] == 0 || collisionArray[idx] == 2);
+	}
+	
+	
+	public function isTileWalkable(X:Int, Y:Int) : Bool
 	{
 		if (X < 0 || Y < 0 || X >= GP.WorldSizeX || Y >= GP.WorldSizeY) return false;
 		
@@ -79,6 +118,19 @@ class Level extends FlxSpriteGroup
 	{
 		super.draw();
 	
+	}
+	
+	public function BreakBreakableTile(X:Int, Y:Int)
+	{
+		var idx : Int = X + Y * GP.WorldSizeX;
+		collisionArray[idx] = 0;
+		
+		for (t in this)
+		{
+			if (t.tx == X && t.ty == Y)
+				t.setTileType(0);
+		}
+		
 	}
 	
 }

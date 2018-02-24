@@ -20,5 +20,6 @@ class GP
 	
 	public static var MineStaggeredExplosionDelay (default, null) : Float = 0.4;
 	public static var MineFlyTimer (default, null) : Float = 0.5;
+	static public var WorldTimerMax (default, null) : Float = 80;
 	
 }

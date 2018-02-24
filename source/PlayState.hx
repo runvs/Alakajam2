@@ -73,10 +73,11 @@ class PlayState extends FlxState
 	
 		FlxTween.tween (overlay, { alpha : 0 }, 0.25);
 		
-		timer = 250;
-		timerText = new FlxText(10, 10, 0, "0", 16);
-		timerText.color = Palette.color5;
-		//add(timerText);
+		timer = GP.WorldTimerMax;
+		timerText = new FlxText(200, 10, 624, "0", 32);
+		timerText.alignment = FlxTextAlign.CENTER;
+		add(timerText);
+		
 		scoreText = new FlxText(10, 32, 0, "0", 16);
 		scoreText.color = Palette.color5;
 		//add(scoreText);
@@ -171,6 +172,12 @@ class PlayState extends FlxState
 				break;
 			}
 		}
+		
+		if (level.isTileBreakable(m.tx, m.ty))
+		{
+			m.ExplodeMe(true);
+		}
+		
 		allMines.add(m);
 	}
 	
@@ -189,6 +196,13 @@ class PlayState extends FlxState
 				ti.start(FlxG.random.float(1.0,1.1) * GP.MineStaggeredExplosionDelay, function(t) { m.ExplodeMe(); } );
 			}
 		}
+		
+		if (level.isTileBreakable(tx, ty))
+		{
+			level.BreakBreakableTile(tx, ty);
+		}
+		
+		
 		
 		for (i in 0 ... GP.WorldExplosionsPerTile)
 		{
@@ -233,11 +247,25 @@ class PlayState extends FlxState
 		return  null;
 	}
 	
-	public function isTileFree(X:Int, Y:Int)
+	public function isTileShootable(X:Int, Y: Int)
+	{
+		return level.isTileShootable(X, Y);
+	}
+	
+	public function isTileWalkable(X:Int, Y:Int)
 	{
 		var noPlayer : Bool = true;
 		
-		return level.isTileFree(X, Y);
+		for (p in players)
+		{
+			if (p.posX == X && p.posY == Y)
+			{
+				noPlayer = false;
+				break;
+			}
+		}
+		
+		return level.isTileWalkable(X, Y) && noPlayer;
 	}
 	
 }
