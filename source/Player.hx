@@ -270,6 +270,6 @@ class Player extends FlxSprite
 	
 	public function KillMe()
 	{
-		alive = true;
+		alive = false;
 	}
 }

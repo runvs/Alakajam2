@@ -107,17 +107,8 @@ class PlayState extends FlxState
 		super.update(elapsed);
 		scoreText.text = "Score: " + Std.string(Score);
 		
-		if (timer > 0)
-		{
-			var dec: Int = Std.int((timer * 10) % 10);
-			if (dec < 0) dec *= -1;
-			timerText.text = "Timer: " + Std.string(Std.int(timer) + "." + Std.string(dec));
-		}
-		else
-		{
-			timerText.text = "SUDDEN DEATH";
-			timerText.color = FlxColor.RED;
-		}
+		TimerStuff();
+		
 		
 		if (!ending)
 		{
@@ -131,10 +122,28 @@ class PlayState extends FlxState
 			{
 				EndGame();
 			}
+
+			CheckStupidPlayer();
 			
 			timer -= FlxG.elapsed;
 		}
 	}	
+	
+	function CheckStupidPlayer() 
+	{
+		for (p in players)
+		{
+			if (!p.alive) continue;
+			
+			for (m in allMines)
+			{
+				if (m.tx == p.posX && m.ty == p.posY)
+				{
+					m.ExplodeMe(false);
+				}
+			}
+		}
+	}
 	
 	function HandleSuddenDeath(elapsed:Float) 
 	{
@@ -237,6 +246,21 @@ class PlayState extends FlxState
 			t.start(1,function(t:FlxTimer): Void {MenuState.setNewScore(Score); FlxG.switchState(new MenuState()); } );
 		}
 		
+	}
+	
+	function TimerStuff():Void 
+	{
+		if (timer > 0)
+		{
+			var dec: Int = Std.int((timer * 10) % 10);
+			if (dec < 0) dec *= -1;
+			timerText.text = "Timer: " + Std.string(Std.int(timer) + "." + Std.string(dec));
+		}
+		else
+		{
+			timerText.text = "SUDDEN DEATH";
+			timerText.color = FlxColor.RED;
+		}
 	}
 	
 	public function SpawnMine ( m : Mine)
