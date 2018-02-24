@@ -17,6 +17,7 @@ class GP
 	public static var PlayerAttackHoldForDistance (default, null) : Float = 0.6;
 	public static var PlayerMaxThrowDistance (default, null) : Int = 6;
 	public static var PlayerMineStartCount (default, null) : Int = 8;
+	public static var PlayerInvisStartTimer (default, null) : Int = 3;
 	
 	public static var MineStaggeredExplosionDelay (default, null) : Float = 0.4;
 	public static var MineFlyTimer (default, null) : Float = 0.5;

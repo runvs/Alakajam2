@@ -71,6 +71,7 @@ class PlayState extends FlxState
 		overlay.alpha = 1;
 		add(overlay);
 	
+		
 		FlxTween.tween (overlay, { alpha : 0 }, 0.25);
 		
 		timer = GP.WorldTimerMax;
@@ -80,11 +81,8 @@ class PlayState extends FlxState
 		
 		scoreText = new FlxText(10, 32, 0, "0", 16);
 		scoreText.color = Palette.color5;
-		//add(scoreText);
-		
+		//add(scoreText);	
 	}
-	
-	
 	
 	/**
 	 * Function that is called when this state is destroyed - you might want to 
@@ -109,23 +107,102 @@ class PlayState extends FlxState
 		super.update(elapsed);
 		scoreText.text = "Score: " + Std.string(Score);
 		
-		var dec: Int = Std.int((timer * 10) % 10);
-		if (dec < 0) dec *= -1;
-		timerText.text = "Timer: " + Std.string(Std.int(timer) + "." + Std.string(dec));
+		if (timer > 0)
+		{
+			var dec: Int = Std.int((timer * 10) % 10);
+			if (dec < 0) dec *= -1;
+			timerText.text = "Timer: " + Std.string(Std.int(timer) + "." + Std.string(dec));
+		}
+		else
+		{
+			timerText.text = "SUDDEN DEATH";
+			timerText.color = FlxColor.RED;
+		}
 		
 		if (!ending)
 		{
-			
-			
-			
 			if (timer <= 0)
+			{
+				HandleSuddenDeath(elapsed);
+			}
+			
+			
+			if (getNumberOfPlayersAlive()  <= 1)
 			{
 				EndGame();
 			}
+			
 			timer -= FlxG.elapsed;
 		}
 	}	
 	
+	function HandleSuddenDeath(elapsed:Float) 
+	{
+		if (timer < -3) timer = -1;
+		
+		if (timer < -2 && timer + elapsed >= -2)
+		{
+			SpawnSuddenDeathCharge();
+		}
+		
+	}
+	
+	
+	
+	
+	function SpawnSuddenDeathCharge() 
+	{
+		var end : Bool = false;
+		
+		for (i in 0...10)
+		{
+			var sx : Int = Std.int(GP.WorldSizeX / 2) ;
+			var sy : Int = 0;
+
+			var ox : Int = FlxG.random.int( -Std.int(GP.WorldSizeX / 2), Std.int(GP.WorldSizeX / 2));
+			var oy : Int = FlxG.random.int(0, GP.WorldSizeY-1);
+	
+			
+			
+			var tx : Int = ox + sx;
+			var ty : Int = oy + sy;
+			
+			var c : Int = 0;
+			while (!isTileShootable(tx, ty))
+			{
+				ox = FlxG.random.int( -Std.int(GP.WorldSizeX / 2), Std.int(GP.WorldSizeX / 2));
+				oy = FlxG.random.int(0, GP.WorldSizeY-1);
+				tx = ox + sx;
+				ty = oy + sy;
+				 c++; 
+				 if (c > 100)
+				 {
+					 end = true;
+					 break;
+				 }
+			}
+			
+			
+			if (end)
+				break;
+
+			var m : Mine = new Mine(sx, sy, sx + ox, sy + oy, FlxG.random.int(0, players.length - 1) , this );
+			SpawnMine(m);
+			
+		}
+	}
+	
+	
+	public function getNumberOfPlayersAlive(): Int
+	{
+		var count : Int = 0;
+		for (p in players)
+		{
+			if (p.alive)
+				count++;
+		}
+		return count;
+	}
 	
 	public function AddPlayer ( bi : BasicInput)
 	{

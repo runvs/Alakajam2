@@ -35,7 +35,7 @@ class Player extends FlxSprite
 	
 	private var MaxMineCount : Int = GP.PlayerMineStartCount;
 	
-	private var invisTimer : Float = 5;
+	private var invisTimer : Float = GP.PlayerInvisStartTimer;
 	private var invisTween : FlxTween = null;
 	
 	public function new(i : Int, bi: BasicInput, s: PlayState) 
@@ -147,8 +147,6 @@ class Player extends FlxSprite
 		{
 			throwDist = 0;
 		}
-			
-		
 	}
 	
 	function ThrowMine() 
