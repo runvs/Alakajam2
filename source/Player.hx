@@ -35,6 +35,9 @@ class Player extends FlxSprite
 	
 	private var MaxMineCount : Int = GP.PlayerMineStartCount;
 	
+	private var invisTimer : Float = 5;
+	private var invisTween : FlxTween = null;
+	
 	public function new(i : Int, bi: BasicInput, s: PlayState) 
 	{
 		super();
@@ -62,6 +65,8 @@ class Player extends FlxSprite
 	{
 		super.update(elapsed);
 		input.update(elapsed);
+	
+		HandleInvisibility(elapsed);
 		
 		//trace(moveList.length);
 		
@@ -79,6 +84,7 @@ class Player extends FlxSprite
 	{
 		if (input.DetonateJustPressed)
 		{
+			UnHide(0.7);
 			var m : Mine = _state.getFirstMineForPlayerX(id);
 			
 			if (m != null && m.mode == 1 )
@@ -110,7 +116,10 @@ class Player extends FlxSprite
 		
 			
 		if ( input.ShootPressed)
+		{
+			UnHide();
 			attackHoldTimer += elapsed;
+		}
 		
 		if (attackHoldTimer > 0)
 		{
@@ -144,6 +153,7 @@ class Player extends FlxSprite
 	
 	function ThrowMine() 
 	{
+		UnHide();
 		var ox : Int = Std.int(MathExtender.objectDir2Point(playerFacing).x) + Std.int(MathExtender.objectDir2Point(playerFacing).x) * throwDist;
 		var oy : Int = Std.int(MathExtender.objectDir2Point(playerFacing).y) + Std.int(MathExtender.objectDir2Point(playerFacing).y) * throwDist;
 
@@ -221,6 +231,28 @@ class Player extends FlxSprite
 		}
 	}
 	
+	function HandleInvisibility(elapsed:Float):Void 
+	{
+		invisTimer -= elapsed;
+		if (invisTimer < 0 && invisTimer +elapsed >= 0 )	// just crossed -> fade to dark
+		{
+			if (invisTween != null)
+			{
+				invisTween.cancel();
+			}
+			invisTween = FlxTween.tween(this, { alpha : 0 }, 0.75);
+		}
+	}
+	
+	public function UnHide(t: Float = 1 ) : Void
+	{
+		if (invisTween != null)
+		{
+			invisTween.cancel();
+		}
+		invisTween = FlxTween.tween(this, { alpha : 1 }, 0.25);
+		invisTimer = t;
+	}
 	
 	
 	override public function draw():Void 
