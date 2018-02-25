@@ -183,10 +183,34 @@ class PlayState extends FlxState
 	
 	function SpawnPowerUp() 
 	{
+		
 		//trace("SpawnPU", level.powerUpLocations.length);
 		var idx : Int = FlxG.random.int(0, level.powerUpLocations.length - 1);
+		
+		for ( i in 0...15)
+		{
+			var positionOK : Bool = true;
+			for (pu in allPowerUps)
+			{
+				if (pu.tx == level.powerUpLocations[idx].x &&  pu.ty == level.powerUpLocations[idx].y)
+				{
+					positionOK = false;
+					break;
+				}
+			}
+			
+			if (positionOK)
+			{
+				break;
+			}
+			else
+			{
+				idx = FlxG.random.int(0, level.powerUpLocations.length - 1);
+			}
+		}
 		//trace(idx);
 		//trace(level.powerUpLocations[idx]);
+		
 		var pu : PowerUp = new PowerUp(Std.int(level.powerUpLocations[idx].x), Std.int(level.powerUpLocations[idx].y));
 		
 		allPowerUps.add(pu);

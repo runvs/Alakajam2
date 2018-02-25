@@ -87,7 +87,7 @@ class JoinState extends FlxState
 			
 			for (i in 0 ... _all.length)
 			{
-				_all[i].text.x = 200 + (i % 2) * 300;
+				_all[i].text.x = 250 + (i % 2) * 300;
 				_all[i].text.y = 150 + Std.int(i / 2)  * 150;
 				
 				_all[i].image.setPosition(_all[i].text.x + 100 - 16, _all[i].text.y + 50);
