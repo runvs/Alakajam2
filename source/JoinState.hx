@@ -29,8 +29,6 @@ class JoinState extends FlxState
 		for (i in 0...4)
 		{
 			_all.push(new JoinEntity(new GPInput(i)));
-		
-			
 		}
 		
 		_text = new FlxText(0, 50, 1024, "Press [THROW] to join!\nPress[SPACE] to start!", 16);

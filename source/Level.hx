@@ -13,7 +13,10 @@ class Level extends FlxTypedSpriteGroup<Tile>
 {
 
 	public var spawnPositions : Array<FlxPoint>;
+	public var powerUpLocations : Array<FlxPoint> = [];
 	private var collisionArray : Array<Int> = [];
+	
+	
 	
 	public function new() 
 	{
@@ -73,7 +76,16 @@ class Level extends FlxTypedSpriteGroup<Tile>
 				spawned = true;
 				collisionArray[i + j * GP.WorldSizeX] = 3;
 			}
-			
+			else if (c.red == 0 && c.blue == 255)
+			{
+				//trace("pu location found at ",i,j);
+				powerUpLocations.push(new FlxPoint(i, j));
+				
+				var w : Tile= new Tile(i,j,3);
+				add(w);
+				spawned = true;
+				collisionArray[i + j * GP.WorldSizeX] = 3;
+			}
 			if (!spawned)
 			{
 				var w : Tile = new Tile(i, j, 0);

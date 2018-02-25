@@ -56,7 +56,7 @@ class PaletteLoader
 			{
 				
 				var idx : Int = Std.parseInt(arr[1]);
-				if (idx == 0) idx = 3; else if (idx < 3) idx = 6 - idx; else idx = 5 - idx;
+				//if (idx == 0) idx = 3; else if (idx < 3) idx = 6 - idx; else idx = 5 - idx;
 				colorName = "color" + Std.string(idx);
 				colorName = StringTools.replace(colorName, "-", "_");
 			}

@@ -3,6 +3,7 @@ package;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.system.FlxAssets.FlxGraphicAsset;
+import flixel.text.FlxText.FlxTextAlign;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
@@ -20,8 +21,8 @@ class Player extends FlxSprite
 	
 	public var moveTimer : Float = 0;
 	
-	public var posX : Int = 0;
-	public var posY : Int = 0;
+	public var tx : Int = 0;
+	public var ty : Int = 0;
 	
 	public var moveList : Array<Int> = [];
 	public var playerFacing : Int = FlxObject.LEFT;
@@ -30,6 +31,8 @@ class Player extends FlxSprite
 	public var attackTimer : Float = 0;
 	public var attackHoldTimer  : Float = 0;
 	public var throwDist : Int = 0;
+	public var hasShield:Bool = false;
+	public var hasExplodeAll:Bool = false;
 	
 	private var targetTile : FlxSprite;
 	
@@ -39,6 +42,9 @@ class Player extends FlxSprite
 	private var invisTween : FlxTween = null;
 	
 	private var playerColor : FlxColor;
+	
+	public var HudText : DoubleText;
+	
 	
 	public function new(i : Int, bi: BasicInput, s: PlayState) 
 	{
@@ -58,6 +64,8 @@ class Player extends FlxSprite
 		targetTile.alpha = 0.8;
 		
 		calcPlayerColor();
+		
+		CreateHudText();
 	}
 	
 	function calcPlayerColor() 
@@ -71,11 +79,13 @@ class Player extends FlxSprite
 	}
 	
 	
+	
+	
 	public function setTilePosition ( px : Int, py : Int)
 	{
 		this.setPosition(px * GP.WorldTileSizeInPixel, py * GP.WorldTileSizeInPixel);
-		posX = px;
-		posY = py;
+		tx = px;
+		ty = py;
 	}
 	
 	override public function update(elapsed:Float):Void 
@@ -97,6 +107,17 @@ class Player extends FlxSprite
 		UpdateTargetTile();
 	
 		HandleDetonateInput();
+		
+		updateHudText();
+	}
+	
+	function updateHudText() 
+	{
+		HudText.text = "Mines: " + (MaxMineCount - _state.getMineCountForPlayerX(id)) + " / " + MaxMineCount + "\n";
+		if (hasShield)
+			HudText.text += "Shield\n";
+		if (hasExplodeAll)
+			HudText.text += "Mega Detonator\n";
 	}
 	
 	function HandleDetonateInput() 
@@ -104,13 +125,35 @@ class Player extends FlxSprite
 		if (input.DetonateJustPressed)
 		{
 			UnHide(0.7);
-			var m : Mine = _state.getFirstMineForPlayerX(id);
 			
-			if (m != null && m.mode == 1 )
+			if (hasExplodeAll)
 			{
-				m.ExplodeMe();
+				hasExplodeAll = false;
+				while (_state.getMineCountForPlayerX(id) != 0)
+				{
+					var m : Mine = _state.getFirstMineForPlayerX(id);
+				
+					if (m != null && m.mode == 1 )
+					{
+						m.ExplodeMe();
+						
+					}
+					else
+					{
+						break;
+					}
+				}
 			}
+			else
+			{
 			
+				var m : Mine = _state.getFirstMineForPlayerX(id);
+				
+				if (m != null && m.mode == 1 )
+				{
+					m.ExplodeMe();
+				}
+			}
 		}
 	}
 	
@@ -122,7 +165,7 @@ class Player extends FlxSprite
 		{
 			var ox : Float = MathExtender.objectDir2Point(playerFacing).x + MathExtender.objectDir2Point(playerFacing).x * throwDist;
 			var oy : Float = MathExtender.objectDir2Point(playerFacing).y + MathExtender.objectDir2Point(playerFacing).y * throwDist;
-			targetTile.setPosition(GP.WorldTileSizeInPixel * (posX + ox), GP.WorldTileSizeInPixel * (posY + oy));
+			targetTile.setPosition(GP.WorldTileSizeInPixel * (tx + ox), GP.WorldTileSizeInPixel * (ty + oy));
 		}
 	}
 	
@@ -178,12 +221,12 @@ class Player extends FlxSprite
 		var ox : Int = Std.int(MathExtender.objectDir2Point(playerFacing).x) + Std.int(MathExtender.objectDir2Point(playerFacing).x) * throwDist;
 		var oy : Int = Std.int(MathExtender.objectDir2Point(playerFacing).y) + Std.int(MathExtender.objectDir2Point(playerFacing).y) * throwDist;
 
-		var tx : Int = posX + ox;
-		var ty : Int = posY + oy;
+		var tx : Int = tx + ox;
+		var ty : Int = ty + oy;
 		
 		if (_state.level.isTileShootable(tx,ty))
 		{	
-			var m : Mine = new Mine(posX, posY, tx, ty, this.id, _state );
+			var m : Mine = new Mine(tx, ty, tx, ty, this.id, _state );
 			_state.SpawnMine(m);
 		}
 	}
@@ -198,9 +241,9 @@ class Player extends FlxSprite
 		if (moveList[0] == FlxObject.LEFT )
 		{
 			playerFacing = FlxObject.LEFT;
-			if (_state.isTileWalkable(posX-1,posY))
+			if (_state.isTileWalkable(tx-1,ty))
 			{
-				posX--;
+				tx--;
 				FlxTween.tween(this, { x : x - GP.WorldTileSizeInPixel }, GP.PlayerMoveTimer, { ease : FlxEase.circInOut } );
 				moveTimer = GP.PlayerMoveTimer;
 			}
@@ -213,9 +256,9 @@ class Player extends FlxSprite
 		else if (moveList[0] == FlxObject.RIGHT )
 		{
 			playerFacing = FlxObject.RIGHT;
-			if (_state.isTileWalkable(posX + 1, posY))
+			if (_state.isTileWalkable(tx + 1, ty))
 			{
-				posX++;
+				tx++;
 				FlxTween.tween(this, { x : x + GP.WorldTileSizeInPixel }, GP.PlayerMoveTimer, { ease : FlxEase.circInOut } );
 				moveTimer = GP.PlayerMoveTimer;
 			}
@@ -228,9 +271,9 @@ class Player extends FlxSprite
 		if (moveList[0] == FlxObject.UP )
 		{
 			playerFacing = FlxObject.UP;
-			if (_state.isTileWalkable(posX, posY - 1))
+			if (_state.isTileWalkable(tx, ty - 1))
 			{
-				posY--;
+				ty--;
 				FlxTween.tween(this, { y : y - GP.WorldTileSizeInPixel }, GP.PlayerMoveTimer, { ease : FlxEase.circInOut } );
 				moveTimer = GP.PlayerMoveTimer;
 			}
@@ -242,9 +285,9 @@ class Player extends FlxSprite
 		else if (moveList[0] == FlxObject.DOWN )
 		{
 			playerFacing = FlxObject.DOWN;
-			if (_state.isTileWalkable(posX, posY + 1))
+			if (_state.isTileWalkable(tx, ty + 1))
 			{
-				posY++;
+				ty++;
 				FlxTween.tween(this, { y : y + GP.WorldTileSizeInPixel }, GP.PlayerMoveTimer, { ease : FlxEase.circInOut } );
 				moveTimer = GP.PlayerMoveTimer;
 			}
@@ -254,7 +297,7 @@ class Player extends FlxSprite
 			}
 		}
 		
-		if (_state.level.isTileDetection(posX, posY))
+		if (_state.level.isTileDetection(tx, ty))
 		{
 			SmallUnhide();
 		}
@@ -298,6 +341,35 @@ class Player extends FlxSprite
 		}
 	}
 	
+	function CreateHudText():Void 
+	{
+		HudText = new DoubleText(0, 0, 300, "Mines: 2", 24);
+		HudText.color = playerColor;
+		HudText.color.alpha = 255;
+		HudText.back.color = Palette.color15; 
+		if (id == 0)
+		{
+			HudText.setPosition(20, 20);
+			HudText.alignment = FlxTextAlign.LEFT;
+		}
+		else if (id == 1)
+		{
+			HudText.setPosition(704, 618);
+			HudText.alignment = FlxTextAlign.RIGHT;
+		}
+		else if (id == 2)
+		{
+			HudText.setPosition(704, 20);
+			HudText.alignment = FlxTextAlign.RIGHT;
+			
+		}
+		else if (id == 3)
+		{
+			HudText.setPosition(20, 618);
+			HudText.alignment = FlxTextAlign.LEFT;
+		}
+	}
+	
 	public function UnHide(t: Float = 1 ) : Void
 	{
 		if (invisTween != null)
@@ -334,6 +406,31 @@ class Player extends FlxSprite
 	
 	public function KillMe()
 	{
-		alive = false;
+		if (hasShield)
+		{
+			hasShield = false;
+			UnHide(0.5);
+		}
+		else
+		{
+			alive = false;
+		}
+	}
+	
+	public function pickUpPowerUp (puType : Int)
+	{
+		UnHide(1.0);
+		if (puType == 0)
+		{
+			hasShield = true;
+		}
+		else if (puType == 1)
+		{
+			MaxMineCount++;
+		}
+		else if (puType == 2)
+		{
+			hasExplodeAll = true;
+		}
 	}
 }

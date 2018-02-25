@@ -25,7 +25,7 @@ class PlayState extends FlxState
 	private var scoreText : FlxText;
 	
 	private var timer : Float;
-	private var timerText : FlxText;
+	private var timerText : DoubleText;
 	
 	private var playersToJoinInput : Array<BasicInput> = [];
 	
@@ -33,12 +33,17 @@ class PlayState extends FlxState
 	
 	public var allMines : AdministratedList<Mine>;
 	public var allExplosions:  AdministratedList<Explosion>;
+	public var allPowerUps : AdministratedList<PowerUp>;
 	
 	public var levelString : String = "";
 	public var level : Level;
 	
 	public var vignette : Vignette;
 	public var flakes : Flakes;
+	
+	private var powerUpSpawnTimer : Float = 0;
+	
+	
 	
 	/**
 	 * Function that is called up when to state is created to set it up. 
@@ -65,6 +70,9 @@ class PlayState extends FlxState
 		SpawnPlayers();
 		add(players);
 	
+		allPowerUps = new AdministratedList<PowerUp>();
+		add(allPowerUps);
+		powerUpSpawnTimer = GP.WorldPowerUpTimerStart;
 		
 		allExplosions = new AdministratedList<Explosion>();
 		add(allExplosions);
@@ -82,12 +90,19 @@ class PlayState extends FlxState
 		overlay.color = FlxColor.BLACK;
 		overlay.alpha = 1;
 		add(overlay);
+		
+		for (p in players)
+		{
+			add(p.HudText);
+		}
+		
 	
 		
 		FlxTween.tween (overlay, { alpha : 0 }, 0.25);
 		
 		timer = GP.WorldTimerMax;
-		timerText = new FlxText(200, 10, 624, "0", 32);
+		timerText = new DoubleText(200, 10, 624, "0", 32);
+		timerText.back.color = Palette.color15;
 		timerText.alignment = FlxTextAlign.CENTER;
 		add(timerText);
 		
@@ -130,6 +145,7 @@ class PlayState extends FlxState
 				HandleSuddenDeath(elapsed);
 			}
 			
+			HandlePowerUps(elapsed);
 			
 			if (getNumberOfPlayersAlive()  <= 1)
 			{
@@ -143,6 +159,40 @@ class PlayState extends FlxState
 		LocalScreenFlash.update(elapsed);
 	}	
 	
+	function HandlePowerUps(elapsed:Float) 
+	{
+		powerUpSpawnTimer -= elapsed;
+		if (powerUpSpawnTimer <= 0)
+		{
+			powerUpSpawnTimer = GP.WorldPowerUpTimerMax;
+			SpawnPowerUp();
+		}
+		
+		for (p in players)
+		{
+			for (pu in allPowerUps)
+			{
+				if (p.tx == pu.tx && p.ty == pu.ty)
+				{
+					p.pickUpPowerUp(pu.powerUpType);
+					pu.pickUp();
+				}
+			}
+		}
+		
+	}
+	
+	function SpawnPowerUp() 
+	{
+		//trace("SpawnPU", level.powerUpLocations.length);
+		var idx : Int = FlxG.random.int(0, level.powerUpLocations.length - 1);
+		//trace(idx);
+		//trace(level.powerUpLocations[idx]);
+		var pu : PowerUp = new PowerUp(Std.int(level.powerUpLocations[idx].x), Std.int(level.powerUpLocations[idx].y));
+		
+		allPowerUps.add(pu);
+	}
+	
 	function CheckStupidPlayer() 
 	{
 		for (p in players)
@@ -151,7 +201,7 @@ class PlayState extends FlxState
 			
 			for (m in allMines)
 			{
-				if (m.tx == p.posX && m.ty == p.posY)
+				if (m.tx == p.tx && m.ty == p.ty)
 				{
 					m.ExplodeMe(false);
 				}
@@ -298,7 +348,7 @@ class PlayState extends FlxState
 	{
 		for (p in players)
 		{
-			if (p.posX == tx && p.posY == ty)
+			if (p.tx== tx && p.ty == ty)
 				p.KillMe();
 		}
 		for (m in allMines)
@@ -371,7 +421,7 @@ class PlayState extends FlxState
 		
 		for (p in players)
 		{
-			if (p.posX == X && p.posY == Y)
+			if (p.tx == X && p.ty == Y)
 			{
 				noPlayer = false;
 				break;
