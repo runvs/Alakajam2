@@ -17,7 +17,7 @@ class MenuState extends FlxState
 {
 	public static var MyDate : String = "2018-02-25";
 	public static var MyJam : String = "2nd Alakajam";
-	public static var MyName : String = "InvisiMineSweeper";
+	public static var MyName : String = "InvisiMines";
 	public static var Authors: String = "@Laguna_999, @Thunraz";
 	
 	
@@ -92,10 +92,10 @@ class MenuState extends FlxState
 		
 		
 		
-		var tx : DoubleText = new DoubleText(0, 0, 500, "Pres [SPACE] to start!", 48);
+		var tx : DoubleText = new DoubleText(0, 0, 500, "Press [SPACE]\nto start!", 48);
+		tx.alignment = FlxTextAlign.CENTER;
 		tx.screenCenter();
 		tx.y += 50;
-		tx.alignment = "CENTER";
 		tx.color = Palette.color8;
 		tx.back.color = Palette.color15;
 		add(tx);

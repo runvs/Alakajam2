@@ -55,7 +55,25 @@ class Player extends FlxSprite
 		id = i;
 		input = bi;
 		
-		this.makeGraphic(Std.int(GP.WorldTileSizeInPixel), Std.int(GP.WorldTileSizeInPixel), FlxColor.WHITE, true);
+		//this.makeGraphic(Std.int(GP.WorldTileSizeInPixel), Std.int(GP.WorldTileSizeInPixel), FlxColor.WHITE, true);
+		this.loadGraphic(AssetPaths.player__png, true, 16, 16);
+		this.origin.set();
+		this.scale.set(2, 2);
+		
+		this.animation.add("shoot_p0", [0, 1, 2, 3, 4], 10, false);
+		this.animation.add("shoot_p1", [5,6,7,8,9], 10, false);
+		this.animation.add("shoot_p2", [10,11,12,13,14], 10, false);
+		this.animation.add("shoot_p3", [15, 16, 17, 18, 19], 10, false);
+		
+		this.animation.add("idle_p0", [20, 21, 22, 23, 24], 10, true);
+		this.animation.add("idle_p1", [25,26,27,28,29], 10, true);
+		this.animation.add("idle_p2", [30,31,32,33,34], 10, true);
+		this.animation.add("idle_p3", [35,36,37,38,39], 10, true);
+		
+		this.animation.add("die", [40, 41, 42, 43, 44, 45, 46, 47, 48], 10, false);
+		
+		origin.set(8, 8);
+		offset.set(-6, -6);
 		
 		targetTile = new FlxSprite();
 		//targetTile.makeGraphic(Std.int(GP.WorldTileSizeInPixel), Std.int(GP.WorldTileSizeInPixel));
@@ -71,6 +89,7 @@ class Player extends FlxSprite
 		
 		pickupSound = new VarSound("assets/sounds");
 		throwSound = new VarSound("assets/sounds/throw");
+		this.animation.play("idle_p" + Std.string(id));
 	}
 	
 	function calcPlayerColor() 
@@ -179,7 +198,7 @@ class Player extends FlxSprite
 		attackTimer -= elapsed;
 		if (attackTimer > 0)
 			return;
-		
+		this.animation.play("idle_p" + Std.string(id),false);
 		
 		if ( input.ShootJustPressed)
 		{
@@ -199,6 +218,7 @@ class Player extends FlxSprite
 			
 			if (input.ShootJustReleased)
 			{
+				this.animation.play("shoot_p" + Std.string(id),true);
 				if (_state.getMineCountForPlayerX(id) >= MaxMineCount )
 				{	
 					// todo dead man's click
@@ -213,6 +233,7 @@ class Player extends FlxSprite
 				attackTimer = 0.2;
 				throwDist = 0;
 			}
+			
 		}
 		else
 		{
@@ -332,6 +353,11 @@ class Player extends FlxSprite
 		{
 			ExecuteCurrentMove();
 		}
+		
+		if (playerFacing == FlxObject.RIGHT) angle = 0;
+		else if (playerFacing == FlxObject.UP) angle = 90;
+		else if (playerFacing == FlxObject.LEFT) angle = 180;
+		else if (playerFacing == FlxObject.DOWN) angle = 270;
 	}
 	
 	function HandleInvisibility(elapsed:Float):Void 
