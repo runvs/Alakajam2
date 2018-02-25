@@ -13,7 +13,7 @@ class GP
 	public static var WorldExplosionsPerTile (default, null) : Int = 8;
 	
 	static public var WorldTimerMax (default, null) : Float = 100;
-	static public var WorldPowerUpTimerStart (default, null) : Float = 1.5 ;
+	static public var WorldPowerUpTimerStart (default, null) : Float = 4.5 ;
 	static public var WorldPowerUpTimerMax (default, null) : Float = 8;
 	static public var WorldPowerFlashTimer(default, null) : Float = 1.1;
 	

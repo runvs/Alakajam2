@@ -50,7 +50,8 @@ class PowerUp extends FlashSprite
 		FlxTween.tween(this, { alpha: 1 }, 1, 
 		{ onComplete: function(t) 
 		{
-			FlxG.camera.shake(0.001, 0.25); LocalScreenFlash.addFlash(x + GP.WorldTileSizeInPixel / 2, y + GP.WorldTileSizeInPixel / 2, 0.25, FlxColor.WHITE); 
+			//FlxG.camera.shake(0.001, 0.25); 
+			LocalScreenFlash.addFlash(x + GP.WorldTileSizeInPixel / 2, y + GP.WorldTileSizeInPixel / 2, 0.25, FlxColor.WHITE); 
 			
 			
 		} 
