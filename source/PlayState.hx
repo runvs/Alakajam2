@@ -122,7 +122,9 @@ class PlayState extends FlxState
 	override public function draw() : Void
 	{
 		super.draw();
-		LocalScreenFlash.draw();
+	
+		if (!ending) 
+			LocalScreenFlash.draw();
 	}
 	
 	/**
@@ -130,14 +132,12 @@ class PlayState extends FlxState
 	 */
 	override public function update(elapsed : Float):Void
 	{
-		super.update(elapsed);
-		
-		
-		TimerStuff();
-		
 		
 		if (!ending)
 		{
+			TimerStuff();
+			super.update(elapsed);
+		
 			if (timer <= 0)
 			{
 				HandleSuddenDeath(elapsed);
@@ -301,10 +301,27 @@ class PlayState extends FlxState
 			
 			FlxTween.tween(overlay, {alpha : 1.0}, 0.9);
 			
+			var winner: Player = null;
+			for (p in players)
+			{
+				FlxTween.tween(p.HudText, { alpha : 0 }, 0.25);
+				if (p.alive)
+					winner = p;
+			}
+			
+			if (getNumberOfPlayersAlive() == 0)
+				timerText.text = "It's a draw!"; 
+			else
+			{
+				timerText.text = "Player " + winner.id + " wins!"; 
+				timerText.color = winner.playerColor;
+				timerText.color.alpha = 255;
+			}
+			
 			
 			
 			var t: FlxTimer = new FlxTimer();
-			t.start(5,function(t) {FlxG.switchState(new MenuState()); } );
+			t.start(2,function(t) {FlxG.switchState(new MenuState()); } );
 		}
 		
 	}

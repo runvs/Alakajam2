@@ -1,5 +1,6 @@
 package;
 
+import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.system.FlxAssets.FlxGraphicAsset;
 import flixel.tweens.FlxEase;
@@ -22,6 +23,8 @@ class Mine extends FlxSprite
 	public var ty : Int;
 	
 	public var explosionSound: VarSound;
+	
+	public var underlay : GlowOverlay;
 	
 	public function new(px : Int, py: Int, _tx: Int, _ty: Int, pID:  Int, s : PlayState) 
 	{
@@ -54,22 +57,32 @@ class Mine extends FlxSprite
 			onComplete: function (t) 
 			{
 				mode = 1;
-				
+				FlxTween.tween(underlay, { alpha : 0.6 }, 0.25);
 				this.animation.play("p" + Std.string(pID), true);
 				//FlxTween.color(this, 0.3, FlxColor.WHITE, FlxColor.RED, {type:FlxTween.PINGPONG});
 			} 
 		} );
 		
 		explosionSound = new VarSound("assets/sounds/explo");
-		
+		underlay = new GlowOverlay( -500, -500, FlxG.camera, Std.int(1.8 * GP.WorldTileSizeInPixel), 1, 0.3, true);
+		underlay.color = FlxColor.BLACK;
+		underlay.alpha = 0;
 	}
 	
+	override public function draw():Void 
+	{
+		underlay.draw();
+		super.draw();
+	}
 	override public function update(elapsed:Float):Void 
 	{
 		super.update(elapsed);
 		//trace(x, y);
 		if (mode == 1 && shouldExplode)
-		ExplodeMe(true);
+			ExplodeMe(true);
+		
+		underlay.setPosition(x + 16, y + 16);
+		
 		
 	}
 	

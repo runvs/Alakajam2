@@ -16,7 +16,7 @@ class Player extends FlxSprite
 {
 	private var _state : PlayState;
 	
-	private var input : BasicInput;
+	public var input : BasicInput;
 	public var id : Int = 0;
 	
 	public var moveTimer : Float = 0;
@@ -41,7 +41,7 @@ class Player extends FlxSprite
 	private var invisTimer : Float = GP.PlayerInvisStartTimer;
 	private var invisTween : FlxTween = null;
 	
-	private var playerColor : FlxColor;
+	public var playerColor : FlxColor;
 	
 	public var HudText : DoubleText;
 	
@@ -231,7 +231,7 @@ class Player extends FlxSprite
 		
 		if (_state.level.isTileShootable(tx,ty))
 		{	
-			var m : Mine = new Mine(tx, ty, tx, ty, this.id, _state );
+			var m : Mine = new Mine(this.tx, this.ty, tx, ty, this.id, _state );
 			_state.SpawnMine(m);
 			throwSound.play();
 		}

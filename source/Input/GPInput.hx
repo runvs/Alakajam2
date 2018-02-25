@@ -16,7 +16,7 @@ class GPInput extends BasicInput
 	{
 		_gamepad = FlxG.gamepads.getByID(ID);
 		_id = ID;
-        name = "gp " +  Std.string(ID) + "DPAD, A,X";
+        name = "gp" +  Std.string(ID) + " DPad, A,X";
 	}
 	
 	public override function update(elapsed : Float ) : Void
