@@ -106,7 +106,7 @@ class Level extends FlxTypedSpriteGroup<Tile>
 		if (idx <0 || idx >= GP.WorldSizeX*GP.WorldSizeY)
 			return false;
 		
-		trace(X, Y, idx, collisionArray[idx]);
+		//trace(X, Y, idx, collisionArray[idx]);
 		return ( collisionArray[idx] == 3);
 	}
 

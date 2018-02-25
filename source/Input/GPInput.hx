@@ -16,7 +16,7 @@ class GPInput extends BasicInput
 	{
 		_gamepad = FlxG.gamepads.getByID(ID);
 		_id = ID;
-        name = "gp " +  Std.string(ID);
+        name = "gp " +  Std.string(ID) + "DPAD, A,X";
 	}
 	
 	public override function update(elapsed : Float ) : Void
@@ -29,20 +29,20 @@ class GPInput extends BasicInput
 		xVal = _gamepad.getXAxis(FlxGamepadInputID.LEFT_ANALOG_STICK);
 		yVal = _gamepad.getYAxis(FlxGamepadInputID.LEFT_ANALOG_STICK);
 
-		if (_gamepad.pressed.DPAD_LEFT)
+		if (_gamepad.justPressed.DPAD_LEFT)
 		{
 			LeftJustPressed = true;
 		}
-		else if (_gamepad.pressed.DPAD_RIGHT)
+		else if (_gamepad.justPressed.DPAD_RIGHT)
 		{
 			RightJustPressed = true;
 		}
 		
-		if (_gamepad.pressed.DPAD_UP)
+		if (_gamepad.justPressed.DPAD_UP)
 		{
 			UpJustPressed = true;
 		}
-		else if (_gamepad.pressed.DPAD_DOWN)
+		else if (_gamepad.justPressed.DPAD_DOWN)
 		{
 			DownJustPressed = true;
 		}
@@ -60,7 +60,7 @@ class GPInput extends BasicInput
 			ShootPressed = true;
 		}
 		
-		if (_gamepad.justPressed.B)
+		if (_gamepad.justPressed.X)
 		{
 			DetonateJustPressed = true;
 		}

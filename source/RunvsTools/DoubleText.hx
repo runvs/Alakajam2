@@ -27,7 +27,9 @@ class DoubleText extends FlxText
 		back.angle = angle;
 		back.scale = this.scale;
 		back.alignment = this.alignment;
+		back.offset = this.offset;
 		back.text = this.text;
+		back.alpha = this.alpha;
 		back.update(elapsed);
 	}
 	

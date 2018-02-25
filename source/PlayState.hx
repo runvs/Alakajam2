@@ -3,6 +3,7 @@ package;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
+import flixel.addons.plugin.screengrab.FlxScreenGrab;
 import flixel.group.FlxSpriteGroup;
 import flixel.math.FlxPoint;
 import flixel.text.FlxText;
@@ -22,8 +23,6 @@ class PlayState extends FlxState
 	private var ending : Bool;
 	
 	public var Score : Int = 0;
-	private var scoreText : FlxText;
-	
 	private var timer : Float;
 	private var timerText : DoubleText;
 	
@@ -42,6 +41,8 @@ class PlayState extends FlxState
 	public var flakes : Flakes;
 	
 	private var powerUpSpawnTimer : Float = 0;
+	
+	private var screengrabTimer : Float  = 0.3;
 	
 	
 	
@@ -106,9 +107,6 @@ class PlayState extends FlxState
 		timerText.alignment = FlxTextAlign.CENTER;
 		add(timerText);
 		
-		scoreText = new FlxText(10, 32, 0, "0", 16);
-		scoreText.color = Palette.color5;
-		//add(scoreText);	
 	}
 	
 	/**
@@ -133,7 +131,7 @@ class PlayState extends FlxState
 	override public function update(elapsed : Float):Void
 	{
 		super.update(elapsed);
-		scoreText.text = "Score: " + Std.string(Score);
+		
 		
 		TimerStuff();
 		
@@ -157,6 +155,7 @@ class PlayState extends FlxState
 			timer -= FlxG.elapsed;
 		}
 		LocalScreenFlash.update(elapsed);
+		screengrabTimer -= elapsed;
 	}	
 	
 	function HandlePowerUps(elapsed:Float) 
@@ -211,7 +210,7 @@ class PlayState extends FlxState
 	
 	function HandleSuddenDeath(elapsed:Float) 
 	{
-		if (timer < -3) timer = -1;
+		if (timer < -2.5) timer = -1.5;
 		
 		if (timer < -2 && timer + elapsed >= -2)
 		{
@@ -227,7 +226,7 @@ class PlayState extends FlxState
 	{
 		var end : Bool = false;
 		
-		for (i in 0...10)
+		for (i in 0...3)
 		{
 			var sx : Int = Std.int(GP.WorldSizeX / 2) ;
 			var sy : Int = 0;
@@ -254,8 +253,6 @@ class PlayState extends FlxState
 					 break;
 				 }
 			}
-			
-			
 			if (end)
 				break;
 
@@ -304,8 +301,10 @@ class PlayState extends FlxState
 			
 			FlxTween.tween(overlay, {alpha : 1.0}, 0.9);
 			
+			
+			
 			var t: FlxTimer = new FlxTimer();
-			t.start(1,function(t:FlxTimer): Void {MenuState.setNewScore(Score); FlxG.switchState(new MenuState()); } );
+			t.start(5,function(t) {FlxG.switchState(new MenuState()); } );
 		}
 		
 	}
@@ -322,6 +321,11 @@ class PlayState extends FlxState
 		{
 			timerText.text = "SUDDEN DEATH";
 			timerText.color = FlxColor.RED;
+		}
+		
+		if (screengrabTimer <= 0)
+		{
+			screengrabTimer = 0.3;
 		}
 	}
 	

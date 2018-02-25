@@ -21,6 +21,8 @@ class Mine extends FlxSprite
 	public var tx : Int;
 	public var ty : Int;
 	
+	public var explosionSound: VarSound;
+	
 	public function new(px : Int, py: Int, _tx: Int, _ty: Int, pID:  Int, s : PlayState) 
 	{
 		super();
@@ -58,6 +60,7 @@ class Mine extends FlxSprite
 			} 
 		} );
 		
+		explosionSound = new VarSound("assets/sounds/explo");
 		
 	}
 	
@@ -86,6 +89,7 @@ class Mine extends FlxSprite
 			_state.ExplodeTile(tx, ty -1);
 		}
 		this.alive = false;
+		explosionSound.play(true);
 	}
 	
 }

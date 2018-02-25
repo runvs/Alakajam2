@@ -61,7 +61,7 @@ class JoinState extends FlxState
 				
 				continue;
 			}
-			if (_all[i].Input.ShootJustPressed)
+			if (_all[i].Input.ShootJustPressed || _all[i].Input.anyPressed)
 			{
 				_all[i].text.text = _all[i].Input.name + "\njoined";
 				

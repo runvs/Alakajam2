@@ -45,6 +45,8 @@ class Player extends FlxSprite
 	
 	public var HudText : DoubleText;
 	
+	private var pickupSound : VarSound;
+	private var throwSound : VarSound;
 	
 	public function new(i : Int, bi: BasicInput, s: PlayState) 
 	{
@@ -66,6 +68,9 @@ class Player extends FlxSprite
 		calcPlayerColor();
 		
 		CreateHudText();
+		
+		pickupSound = new VarSound("assets/sounds");
+		throwSound = new VarSound("assets/sounds/throw");
 	}
 	
 	function calcPlayerColor() 
@@ -228,6 +233,7 @@ class Player extends FlxSprite
 		{	
 			var m : Mine = new Mine(tx, ty, tx, ty, this.id, _state );
 			_state.SpawnMine(m);
+			throwSound.play();
 		}
 	}
 	
@@ -419,6 +425,7 @@ class Player extends FlxSprite
 	
 	public function pickUpPowerUp (puType : Int)
 	{
+		pickupSound.play();
 		UnHide(1.0);
 		if (puType == 0)
 		{

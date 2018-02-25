@@ -29,7 +29,7 @@ class VarSound
 		if (_sounds.length == 0) return;
 		
 		var idx : Int = FlxG.random.int(0, _sounds.length - 1);
-		trace("play sound " + Std.string(idx));
+		//trace("play sound " + Std.string(idx));
 		_sounds[idx].volume = volume;
 		_sounds[idx].play(forceRestart, startTime, endTime);
 	}

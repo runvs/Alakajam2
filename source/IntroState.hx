@@ -32,13 +32,14 @@ class IntroState extends FlxState
 		
 		bg = new FlxSprite();
 		bg.makeGraphic(FlxG.width, FlxG.height, FlxColor.WHITE);
-		bg.color = FlxColor.BLACK;
+		bg.color = Palette.BLACK;
 		add(bg);
 		
 		logo = new FlxSprite(0, 0);
 		logo.loadGraphic(AssetPaths.runvs_logo__png, false, 800, 600);
-		logo.color = Palette.color4;
+		logo.color = Palette.color8;
 		logo.origin.set();
+		logo.setPosition(112, 0);
 		
 		//logo.scale.set(0.5, 0.5);
 		add(logo);
