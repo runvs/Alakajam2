@@ -47,6 +47,7 @@ class Player extends FlxSprite
 	
 	private var pickupSound : VarSound;
 	private var throwSound : VarSound;
+	var dying:Bool = false;
 	
 	public function new(i : Int, bi: BasicInput, s: PlayState) 
 	{
@@ -62,7 +63,7 @@ class Player extends FlxSprite
 		
 		this.animation.add("shoot_p0", [0, 1, 2, 3, 4], 10, false);
 		this.animation.add("shoot_p1", [5,6,7,8,9], 10, false);
-		this.animation.add("shoot_p2", [10,11,12,13,14], 10, false);
+		this.animation.add("shoot_p2", [10,11,12,13,14], 10, false);	
 		this.animation.add("shoot_p3", [15, 16, 17, 18, 19], 10, false);
 		
 		this.animation.add("idle_p0", [20, 21, 22, 23, 24], 10, true);
@@ -70,7 +71,7 @@ class Player extends FlxSprite
 		this.animation.add("idle_p2", [30,31,32,33,34], 10, true);
 		this.animation.add("idle_p3", [35,36,37,38,39], 10, true);
 		
-		this.animation.add("die", [40, 41, 42, 43, 44, 45, 46, 47, 48], 10, false);
+		this.animation.add("die", [40, 41, 42, 43, 44, 45, 46, 47, 48], 6, false);
 		
 		origin.set(8, 8);
 		offset.set(-6, -6);
@@ -80,6 +81,7 @@ class Player extends FlxSprite
 		targetTile.loadGraphic(AssetPaths.crosshair__png, true, 16, 16);
 		targetTile.animation.add("idle", [for (i in 0...10) i], 15);
 		targetTile.animation.play("idle");
+		targetTile.origin.set();
 		targetTile.scale.set(2, 2);
 		targetTile.alpha = 0.8;
 		
@@ -197,6 +199,7 @@ class Player extends FlxSprite
 	
 	function HandleLayMineInput(elapsed : Float) 
 	{
+		if (dying) return;
 		attackTimer -= elapsed;
 		if (attackTimer > 0)
 			return;
@@ -447,7 +450,11 @@ class Player extends FlxSprite
 		}
 		else
 		{
+			dying = true;
 			alive = false;
+			UnHide(5);
+			animation.play("die", true );
+			
 		}
 	}
 	

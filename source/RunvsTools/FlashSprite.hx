@@ -40,6 +40,8 @@ class FlashSprite extends FlxSprite
 		_flashOverlay.update(elapsed);
 		_flashOverlay.offset = this.offset;
 		_flashOverlay.setPosition(x, y);
+		_flashOverlay.scale.set(scale.x, scale.y);
+		_flashOverlay.origin.set(origin.x, origin.y);
 		if (_flashTimer >= 0)
 		{
 			_flashOverlay.animation.frameIndex = this.animation.frameIndex;

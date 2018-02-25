@@ -25,27 +25,30 @@ class PowerUp extends FlashSprite
 	public function new(_x : Int, _y : Int) 
 	{
 		super();
-		this.makeGraphic(Std.int(GP.WorldTileSizeInPixel), Std.int(GP.WorldTileSizeInPixel));
-		_flashOverlay.makeGraphic(Std.int(GP.WorldTileSizeInPixel), Std.int(GP.WorldTileSizeInPixel));
+		//this.makeGraphic(Std.int(GP.WorldTileSizeInPixel), Std.int(GP.WorldTileSizeInPixel));
+		//_flashOverlay.makeGraphic(Std.int(GP.WorldTileSizeInPixel), Std.int(GP.WorldTileSizeInPixel));
 		
 	
 		
 		
-		powerUpType = FlxG.random.int(0, 4);
-		if (powerUpType == 4) powerUpType = 1;
+		powerUpType = FlxG.random.int(0, 3);
+		if (powerUpType == 3) powerUpType = 1;
 		setTilePosition(_x, _y);
 		
 		if (powerUpType == 0)
-			this.color = Palette.color11;
+			this.loadGraphic(AssetPaths.pickup_shield__png, false, 16, 16);
 		else if (powerUpType == 1)
-			this.color = Palette.color13;
+			this.loadGraphic(AssetPaths.pickup_mines__png, false, 16, 16);
 		else if (powerUpType == 2)
-			this.color = Palette.color8;
+			this.loadGraphic(AssetPaths.pickup_megaexplode__png, false, 16, 16);
 			
-		this.angularVelocity = 45;
+		this.origin.set();
+		//this.angularVelocity = 45;
 		
-		//alpha = 0;
-		scale.set(2.5,2.5);
+		
+		scale.set(5,5);
+		
+		
 		
 		FlxTween.tween(this, { alpha: 1 }, 1, 
 		{ onComplete: function(t) 
@@ -56,7 +59,7 @@ class PowerUp extends FlashSprite
 			
 		} 
 		} );
-		FlxTween.tween(this.scale, { x: 1, y:1 } );
+		FlxTween.tween(this.scale, { x: 2, y:2 } );
 		
 	}
 	
