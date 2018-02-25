@@ -78,7 +78,7 @@ class PlayState extends FlxState
 		allExplosions = new AdministratedList<Explosion>();
 		add(allExplosions);
 		
-		flakes = new Flakes(FlxG.camera, 10, 80, 6, FlxColor.fromRGB(186, 174, 160));
+		flakes = new Flakes(FlxG.camera, 10, 80, 6, Palette.color0);
 		add(flakes);
 		
 		

@@ -12,7 +12,7 @@ class VarSound
 
 	public var volume : Float = 1.0;
 	
-	
+	/// remember that folder MUST end with an /
 	public function new(folder:String)
 	{
 		_sounds = new Array<FlxSound>();

@@ -63,7 +63,9 @@ class Mine extends FlxSprite
 			} 
 		} );
 		
-		explosionSound = new VarSound("assets/sounds/explo");
+		
+		explosionSound = new VarSound("assets/sounds/explo/");
+		explosionSound.volume = 0.8;
 		underlay = new GlowOverlay( -500, -500, FlxG.camera, Std.int(1.8 * GP.WorldTileSizeInPixel), 1, 0.3, true);
 		underlay.color = FlxColor.BLACK;
 		underlay.alpha = 0;
@@ -93,16 +95,21 @@ class Mine extends FlxSprite
 			shouldExplode = true;
 			return;
 		}
-		_state.ExplodeTile(tx, ty);
-		if (!small)
+		
+		if (alive)
 		{
-			_state.ExplodeTile(tx + 1, ty);
-			_state.ExplodeTile(tx - 1, ty);
-			_state.ExplodeTile(tx, ty +1);
-			_state.ExplodeTile(tx, ty -1);
+			_state.ExplodeTile(tx, ty);
+			
+			if (!small)
+			{
+				_state.ExplodeTile(tx + 1, ty);
+				_state.ExplodeTile(tx - 1, ty);
+				_state.ExplodeTile(tx, ty +1);
+				_state.ExplodeTile(tx, ty -1);
+			}
+			this.alive = false;
+			explosionSound.play(true);
 		}
-		this.alive = false;
-		explosionSound.play(true);
 	}
 	
 }

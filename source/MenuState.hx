@@ -18,7 +18,7 @@ class MenuState extends FlxState
 	public static var MyDate : String = "2018-02-25";
 	public static var MyJam : String = "2nd Alakajam";
 	public static var MyName : String = "InvisiMines";
-	public static var Authors: String = "@Laguna_999, @Thunraz";
+	public static var Authors: String = "@Thunraz, @Laguna_999";
 	
 	
 	public static var HighScore : Int = 0;

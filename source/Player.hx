@@ -87,8 +87,10 @@ class Player extends FlxSprite
 		
 		CreateHudText();
 		
-		pickupSound = new VarSound("assets/sounds");
-		throwSound = new VarSound("assets/sounds/throw");
+		pickupSound = new VarSound("assets/sounds/");
+		pickupSound.volume = 0.5;
+		throwSound = new VarSound("assets/sounds/throw/");
+		throwSound.volume = 0.5;
 		this.animation.play("idle_p" + Std.string(id));
 	}
 	
