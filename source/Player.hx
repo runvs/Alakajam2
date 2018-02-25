@@ -119,24 +119,28 @@ class Player extends FlxSprite
 	override public function update(elapsed:Float):Void 
 	{
 		super.update(elapsed);
-		input.update(elapsed);
 		
-		targetTile.update(elapsed);
+		if (alive)
+		{
+			input.update(elapsed);
+			
+			targetTile.update(elapsed);
+			
+			HandleInvisibility(elapsed);
+			
+			//trace(moveList.length);
+			
+			
+			HandleMoveInput();	
+			PerformMoves(elapsed);
 		
-		HandleInvisibility(elapsed);
+			HandleLayMineInput(elapsed);
+			UpdateTargetTile();
 		
-		//trace(moveList.length);
-		
-		
-		HandleMoveInput();	
-		PerformMoves(elapsed);
-	
-		HandleLayMineInput(elapsed);
-		UpdateTargetTile();
-	
-		HandleDetonateInput();
-		
-		updateHudText();
+			HandleDetonateInput();
+			
+			updateHudText();
+		}
 	}
 	
 	function updateHudText() 
